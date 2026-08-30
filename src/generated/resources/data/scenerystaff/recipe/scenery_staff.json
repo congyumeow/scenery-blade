@@ -1,0 +1,31 @@
+{
+  "type": "slashblade:shaped_blade",
+  "blade": "scenerystaff:scenery_staff",
+  "category": "equipment",
+  "key": {
+    "A": {
+      "item": "minecraft:stick"
+    },
+    "B": {
+      "item": "minecraft:emerald"
+    },
+    "C": {
+      "item": "minecraft:gold_ingot"
+    },
+    "D": {
+      "item": "minecraft:diamond"
+    },
+    "E": {
+      "item": "minecraft:nether_star"
+    }
+  },
+  "pattern": [
+    " AB",
+    " CD",
+    "E  "
+  ],
+  "result": {
+    "count": 1,
+    "id": "slashblade:slashblade"
+  }
+}

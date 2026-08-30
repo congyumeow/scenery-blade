@@ -1,0 +1,31 @@
+{
+  "creativeGroup": "scenerystaff:scenerystaff_tab",
+  "enchantments": [
+    {
+      "id": "minecraft:power",
+      "lvl": 2
+    },
+    {
+      "id": "minecraft:unbreaking",
+      "lvl": 3
+    }
+  ],
+  "name": "scenerystaff:scenery_staff",
+  "properties": {
+    "attack_base": 12.0,
+    "max_damage": 200,
+    "slash_art": "scenerystaff:erosion_domain",
+    "special_effects": [
+      "scenerystaff:polymerization"
+    ],
+    "sword_type": [
+      "bewitched"
+    ]
+  },
+  "render": {
+    "carry_type": "default",
+    "model": "scenerystaff:model/scenery/scenery.obj",
+    "summon_sword_color": 11189196,
+    "texture": "scenerystaff:model/scenery/scenery_staff.png"
+  }
+}

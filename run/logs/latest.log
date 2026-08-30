@@ -1,0 +1,35 @@
+[308月2026 15:25:03.989] [main/INFO] [cpw.mods.modlauncher.Launcher/MODLAUNCHER]: ModLauncher running: args [--launchTarget, forgedatadev, --assetIndex, 17, --assetsDir, E:\\slashblade_mod\\.gradle-home\\caches\\neoformruntime\\assets, --gameDir, ., --fml.fmlVersion, 4.0.42, --fml.mcVersion, 1.21.1, --fml.neoForgeVersion, 21.1.228, --fml.neoFormVersion, 20240808.144430, --mod, scenerystaff, --all, --output, E:\\slashblade_mod\\scenery-blade\\src\\generated\\resources, --existing, E:\\slashblade_mod\\scenery-blade\\src\\main\\resources]
+[308月2026 15:25:03.993] [main/INFO] [cpw.mods.modlauncher.Launcher/MODLAUNCHER]: JVM identified as Oracle Corporation Java HotSpot(TM) 64-Bit Server VM 21.0.4+8-LTS-274
+[308月2026 15:25:03.994] [main/INFO] [cpw.mods.modlauncher.Launcher/MODLAUNCHER]: ModLauncher 11.0.5+main.901c6ea8 starting: java version 21.0.4 by Oracle Corporation; OS Windows 11 arch amd64 version 10.0
+[308月2026 15:25:04.338] [main/INFO] [net.neoforged.fml.loading.ImmediateWindowHandler/]: ImmediateWindowProvider not loading because launch target is forgedatadev
+[308月2026 15:25:04.447] [main/INFO] [mixin/]: SpongePowered MIXIN Subsystem Version=0.8.7 Source=union:/E:/slashblade_mod/.gradle-home/caches/modules-2/files-2.1/net.fabricmc/sponge-mixin/0.15.2+mixin.0.8.7/2af2f021d8e02a0220dc27a7a72b4666d66d44ca/sponge-mixin-0.15.2+mixin.0.8.7.jar%23138!/ Service=ModLauncher Env=CLIENT
+[308月2026 15:25:05.000] [main/INFO] [net.neoforged.fml.loading.moddiscovery.locators.JarInJarDependencyLocator/]: Found 2 dependencies adding them to mods collection
+[308月2026 15:25:05.001] [main/INFO] [net.neoforged.fml.loading.moddiscovery.ModDiscoverer/]: 
+     Mod List:
+		Name Version (Mod Id)
+
+		Legendreliclib 1.21.1-1.0.2 (legendreliclib)
+		Minecraft 1.21.1 (minecraft)
+		NeoForge 21.1.228 (neoforge)
+		scenery staff 1.21.1-1.0.1 (scenerystaff)
+		Slash Blade:Resharpened 2.0.2-1.21.1 (slashblade)
+[308月2026 15:25:06.162] [main/INFO] [mixin/]: Compatibility level set to JAVA_21
+[308月2026 15:25:06.192] [main/INFO] [cpw.mods.modlauncher.LaunchServiceHandler/MODLAUNCHER]: Launching target 'forgedatadev' with arguments [--gameDir, ., --assetsDir, E:\slashblade_mod\.gradle-home\caches\neoformruntime\assets, --assetIndex, 17, --mod, scenerystaff, --all, --output, E:\\slashblade_mod\\scenery-blade\\src\\generated\\resources, --existing, E:\\slashblade_mod\\scenery-blade\\src\\main\\resources]
+[308月2026 15:25:06.340] [main/WARN] [mixin/]: Reference map 'slashblade.refmap.json' for slashblade.mixins.json could not be read. If this is a development environment you can ignore this message
+[308月2026 15:25:06.350] [main/WARN] [mixin/]: Reference map 'slashblade.refmap.json' for slashblade.ar.mixins.json could not be read. If this is a development environment you can ignore this message
+[308月2026 15:25:06.351] [main/WARN] [mixin/]: Reference map 'slashblade.refmap.json' for slashblade.emi.mixins.json could not be read. If this is a development environment you can ignore this message
+[308月2026 15:25:06.353] [main/WARN] [mixin/]: Reference map 'slashblade.refmap.json' for slashblade.patchouli.mixins.json could not be read. If this is a development environment you can ignore this message
+[308月2026 15:25:06.354] [main/WARN] [mixin/]: Reference map 'slashblade.refmap.json' for slashblade.thetwilightforest.mixins.json could not be read. If this is a development environment you can ignore this message
+[308月2026 15:25:07.082] [main/INFO] [net.neoforged.neoforge.data.loading.DatagenModLoader/]: Initializing Data Gatherer for mods [scenerystaff]
+[308月2026 15:25:07.105] [main/INFO] [MixinExtras|Service/]: Initializing MixinExtras via com.llamalad7.mixinextras.service.MixinExtrasServiceImpl(version=0.5.3).
+[308月2026 15:25:13.541] [modloading-worker-0/INFO] [net.neoforged.neoforge.common.NeoForgeMod/NEOFORGE-MOD]: NeoForge mod loading, version 21.1.228, for MC 1.21.1
+[308月2026 15:25:14.162] [main/WARN] [net.minecraft.server.packs.VanillaPackResourcesBuilder/]: Assets URL 'union:/E:/slashblade_mod/scenery-blade/build/moddev/artifacts/neoforge-21.1.228-minecraft.jar%23189!/assets/.mcassetsroot' uses unexpected schema
+[308月2026 15:25:14.163] [main/WARN] [net.minecraft.server.packs.VanillaPackResourcesBuilder/]: Assets URL 'union:/E:/slashblade_mod/scenery-blade/build/moddev/artifacts/neoforge-21.1.228-minecraft.jar%23189!/data/.mcassetsroot' uses unexpected schema
+[308月2026 15:25:14.482] [main/INFO] [net.minecraft.data.DataGenerator/]: Starting provider: Sound Definitions
+[308月2026 15:25:14.493] [main/INFO] [net.minecraft.data.DataGenerator/]: Sound Definitions finished after 11 ms
+[308月2026 15:25:14.493] [main/INFO] [net.minecraft.data.DataGenerator/]: Starting provider: Recipes
+[308月2026 15:25:14.608] [main/INFO] [net.minecraft.data.DataGenerator/]: Recipes finished after 114 ms
+[308月2026 15:25:14.608] [main/INFO] [net.minecraft.data.DataGenerator/]: Starting provider: Registries
+[308月2026 15:25:14.755] [main/INFO] [net.minecraft.data.DataGenerator/]: Registries finished after 145 ms
+[308月2026 15:25:14.755] [main/INFO] [net.minecraft.data.DataGenerator/]: All providers took: 272 ms
+[308月2026 15:25:14.765] [main/INFO] [net.minecraft.data.HashCache/]: Caching: total files: 4, old count: 0, new count: 5, removed stale: 0, written: 4
