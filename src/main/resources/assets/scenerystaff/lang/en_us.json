@@ -1,5 +1,6 @@
 {
   "item.scenerystaff.scenery_staff": "Scenery Staff ★Denia★",
+  "item.scenerystaff.scenery_staff_worn": "Worn Scenery Staff",
   "se.scenerystaff.polymerization": "Polymerization",
   "slash_art.scenerystaff.erosion_domain": "Erosion Domain",
   "message.scenerystaff.domain_cooldown": "Erosion Domain on cooldown (%ss)",

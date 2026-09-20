@@ -4,7 +4,13 @@
   "category": "equipment",
   "key": {
     "A": {
-      "item": "minecraft:stick"
+      "type": "slashblade:blade",
+      "items": [
+        "slashblade:slashblade"
+      ],
+      "request": {
+        "name": "scenerystaff:scenery_staff_worn"
+      }
     },
     "B": {
       "item": "minecraft:emerald"
@@ -20,8 +26,8 @@
     }
   },
   "pattern": [
-    " AB",
-    " CD",
+    " CB",
+    " AD",
     "E  "
   ],
   "result": {
