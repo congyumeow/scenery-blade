@@ -1,0 +1,33 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "A": {
+      "item": "minecraft:sweet_berries"
+    },
+    "B": {
+      "item": "minecraft:torch"
+    },
+    "C": {
+      "item": "minecraft:cocoa_beans"
+    },
+    "D": {
+      "item": "minecraft:sugar"
+    },
+    "E": {
+      "item": "minecraft:egg"
+    },
+    "F": {
+      "item": "minecraft:wheat"
+    }
+  },
+  "pattern": [
+    "ABC",
+    "DED",
+    "FFF"
+  ],
+  "result": {
+    "count": 1,
+    "id": "scenerystaff:denia_birthday_cake"
+  }
+}

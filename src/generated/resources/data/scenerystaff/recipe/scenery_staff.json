@@ -4,6 +4,18 @@
   "category": "equipment",
   "key": {
     "A": {
+      "item": "scenerystaff:denia_waveband"
+    },
+    "B": {
+      "item": "minecraft:diamond"
+    },
+    "C": {
+      "item": "scenerystaff:denia_birthday_cake"
+    },
+    "D": {
+      "item": "minecraft:crying_obsidian"
+    },
+    "E": {
       "type": "slashblade:blade",
       "items": [
         "slashblade:slashblade"
@@ -13,24 +25,12 @@
         "name": "scenerystaff:scenery_staff_worn",
         "proud_soul": 20000
       }
-    },
-    "B": {
-      "item": "minecraft:emerald"
-    },
-    "C": {
-      "item": "minecraft:gold_ingot"
-    },
-    "D": {
-      "item": "minecraft:diamond"
-    },
-    "E": {
-      "item": "minecraft:nether_star"
     }
   },
   "pattern": [
-    " CB",
-    " AD",
-    "E  "
+    " C ",
+    "BAB",
+    "DED"
   ],
   "result": {
     "count": 1,

@@ -3,6 +3,15 @@
   "blade": "scenerystaff:scenery_staff_worn",
   "category": "equipment",
   "key": {
+    "A": {
+      "item": "minecraft:cherry_sapling"
+    },
+    "B": {
+      "item": "scenerystaff:xuzhi"
+    },
+    "C": {
+      "item": "minecraft:iron_ingot"
+    },
     "D": {
       "type": "slashblade:blade",
       "items": [
@@ -11,21 +20,12 @@
       "request": {
         "kill": 50
       }
-    },
-    "E": {
-      "item": "minecraft:emerald"
-    },
-    "G": {
-      "item": "minecraft:gold_ingot"
-    },
-    "I": {
-      "item": "minecraft:iron_ingot"
     }
   },
   "pattern": [
-    " I ",
-    "GDG",
-    " E "
+    " A ",
+    "BDB",
+    "CBC"
   ],
   "result": {
     "count": 1,

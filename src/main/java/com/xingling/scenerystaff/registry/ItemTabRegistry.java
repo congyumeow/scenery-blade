@@ -27,6 +27,10 @@ public class ItemTabRegistry {
                             s.setModel(SceneryStaff.prefix("model/scenery/scenery.obj"));
                         });
                         return stack;
-                    }).displayItems((params, output) -> {})
+                    }).displayItems((params, output) -> {
+                        output.accept(ItemRegistry.XUZHI.get());
+                        output.accept(ItemRegistry.DENIA_WAVEBAND.get());
+                        output.accept(ItemRegistry.DENIA_BIRTHDAY_CAKE.get());
+                    })
                     .build());
 }
