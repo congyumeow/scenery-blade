@@ -31,7 +31,7 @@ public class ErosionDomainRenderer extends EntityRenderer<ErosionDomainEntity> {
     private static final ResourceLocation VOID_TEXTURE = SceneryStaff.prefix("textures/entity/xuzhikongj.png");
 
     /** 领域半径，与 {@link ErosionDomainEntity} 的伤害判定半径保持一致 */
-    private static final float DOMAIN_RADIUS = 5.0F;
+    private static final float DOMAIN_RADIUS = 10.0F;
     /** 中央虚质空间漩涡的直径：仅覆盖星形中心的低透明度空洞 */
     private static final float VOID_SIZE = 2.2F;
     /** 领域持续时间（tick），与 entity.setDuration(200) 一致，用于淡入淡出 */
