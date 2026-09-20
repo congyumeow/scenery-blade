@@ -1,36 +1,31 @@
 {
   "type": "slashblade:shaped_blade",
-  "blade": "scenerystaff:scenery_staff",
+  "blade": "scenerystaff:scenery_staff_worn",
   "category": "equipment",
   "key": {
-    "A": {
+    "D": {
       "type": "slashblade:blade",
       "items": [
-        "slashblade:slashblade"
+        "slashblade:slashblade_white"
       ],
       "request": {
-        "kill": 1000,
-        "name": "scenerystaff:scenery_staff_worn",
-        "proud_soul": 20000
+        "kill": 50
       }
     },
-    "B": {
+    "E": {
       "item": "minecraft:emerald"
     },
-    "C": {
+    "G": {
       "item": "minecraft:gold_ingot"
     },
-    "D": {
-      "item": "minecraft:diamond"
-    },
-    "E": {
-      "item": "minecraft:nether_star"
+    "I": {
+      "item": "minecraft:iron_ingot"
     }
   },
   "pattern": [
-    " CB",
-    " AD",
-    "E  "
+    " I ",
+    "GDG",
+    " E "
   ],
   "result": {
     "count": 1,

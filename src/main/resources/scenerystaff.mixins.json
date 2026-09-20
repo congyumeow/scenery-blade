@@ -2,10 +2,11 @@
   "required": true,
   "minVersion": "0.8",
   "package": "com.xingling.scenerystaff.mixin",
-  "compatibilityLevel": "JAVA_8",
+  "compatibilityLevel": "JAVA_21",
   "mixins": [
   ],
   "client": [
+    "LayerMainBladeMixin"
   ],
   "injectors": {
     "defaultRequire": 1

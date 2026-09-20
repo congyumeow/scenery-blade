@@ -45,16 +45,16 @@ public class SceneryStaffBladeRegistry {
                                 .build(),
                         PropertiesDefinition.Builder.newInstance()
                                 .defaultSwordType(List.of(SwordType.BEWITCHED))
-                                .baseAttackModifier(14)
-                                .maxDamage(200)
+                                .baseAttackModifier(20)
+                                .maxDamage(500)
                                 .addSpecialEffect(SERegistry.POLYMERIZATION.getId())   // 添加SE
                                 .slashArtsType(SARegistry.EROSION_DOMAIN.getId())      // 设置SA
                                 .build(),
                         List.of(
-                                new EnchantmentDefinition(getEnchantment(bootstrap, Enchantments.POWER), 5),
+                                new EnchantmentDefinition(getEnchantment(bootstrap, Enchantments.POWER), 10),
                                 new EnchantmentDefinition(getEnchantment(bootstrap, Enchantments.UNBREAKING), 3),
                                 new EnchantmentDefinition(getEnchantment(bootstrap, Enchantments.LOOTING), 7),
-                                new EnchantmentDefinition(getEnchantment(bootstrap, Enchantments.SMITE), 5),
+                                new EnchantmentDefinition(getEnchantment(bootstrap, Enchantments.SMITE), 10),
                                 new EnchantmentDefinition(getEnchantment(bootstrap, Enchantments.SHARPNESS), 5)
                         ),
                         ItemTabRegistry.SCENERY_TAB.getId()
@@ -68,19 +68,21 @@ public class SceneryStaffBladeRegistry {
                         // name 与数据包 key 保持一致（翻译键 item.scenerystaff.scenery_staff_worn）
                         SceneryStaff.prefix("scenery_staff_worn"),
                         RenderDefinition.Builder.newInstance()
-                                .textureName(SceneryStaff.prefix("model/scenery/scenery_staff.png"))
+                                .textureName(SceneryStaff.prefix("model/scenery/scenery.png"))
                                 .modelName(SceneryStaff.prefix("model/scenery/scenery.obj"))
                                 .effectColor(0x7FA8C0)
                                 .build(),
                         PropertiesDefinition.Builder.newInstance()
                                 .defaultSwordType(List.of(SwordType.BEWITCHED))
-                                .baseAttackModifier(7)
-                                .maxDamage(100)
+                                .baseAttackModifier(10)
+                                .maxDamage(200)
                                 .slashArtsType(SlashArtsRegistry.WAVE_EDGE.getId())
                                 .build(),
                         List.of(
-                                new EnchantmentDefinition(getEnchantment(bootstrap, Enchantments.SHARPNESS), 2),
-                                new EnchantmentDefinition(getEnchantment(bootstrap, Enchantments.UNBREAKING), 2)
+                                new EnchantmentDefinition(getEnchantment(bootstrap, Enchantments.SHARPNESS), 3),
+                                new EnchantmentDefinition(getEnchantment(bootstrap, Enchantments.UNBREAKING), 3),
+                                new EnchantmentDefinition(getEnchantment(bootstrap, Enchantments.POWER), 5),
+                                new EnchantmentDefinition(getEnchantment(bootstrap, Enchantments.SMITE), 5)
                         ),
                         ItemTabRegistry.SCENERY_TAB.getId()
                 )

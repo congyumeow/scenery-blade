@@ -3,7 +3,7 @@
   "enchantments": [
     {
       "id": "minecraft:power",
-      "lvl": 5
+      "lvl": 10
     },
     {
       "id": "minecraft:unbreaking",
@@ -15,7 +15,7 @@
     },
     {
       "id": "minecraft:smite",
-      "lvl": 5
+      "lvl": 10
     },
     {
       "id": "minecraft:sharpness",
@@ -24,8 +24,8 @@
   ],
   "name": "scenerystaff:scenery_staff",
   "properties": {
-    "attack_base": 14.0,
-    "max_damage": 200,
+    "attack_base": 20.0,
+    "max_damage": 500,
     "slash_art": "scenerystaff:erosion_domain",
     "special_effects": [
       "scenerystaff:polymerization"
