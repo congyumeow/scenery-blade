@@ -36,14 +36,17 @@ public class SceneryStaffBladeRegistry {
                                 .build(),
                         PropertiesDefinition.Builder.newInstance()
                                 .defaultSwordType(List.of(SwordType.BEWITCHED))
-                                .baseAttackModifier(12)
+                                .baseAttackModifier(14)
                                 .maxDamage(200)
                                 .addSpecialEffect(SERegistry.POLYMERIZATION.getId())   // 添加SE
                                 .slashArtsType(SARegistry.EROSION_DOMAIN.getId())      // 设置SA
                                 .build(),
                         List.of(
-                                new EnchantmentDefinition(getEnchantment(bootstrap, Enchantments.POWER), 2),
-                                new EnchantmentDefinition(getEnchantment(bootstrap, Enchantments.UNBREAKING), 3)
+                                new EnchantmentDefinition(getEnchantment(bootstrap, Enchantments.POWER), 5),
+                                new EnchantmentDefinition(getEnchantment(bootstrap, Enchantments.UNBREAKING), 3),
+                                new EnchantmentDefinition(getEnchantment(bootstrap, Enchantments.LOOTING), 7),
+                                new EnchantmentDefinition(getEnchantment(bootstrap, Enchantments.SMITE), 5),
+                                new EnchantmentDefinition(getEnchantment(bootstrap, Enchantments.SHARPNESS), 5)
                         ),
                         ItemTabRegistry.SCENERY_TAB.getId()
                 )

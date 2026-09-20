@@ -5,6 +5,8 @@ import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Axis;
 import com.xingling.scenerystaff.SceneryStaff;
 import com.xingling.scenerystaff.entity.ErosionDomainEntity;
+import net.minecraft.client.Camera;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.entity.EntityRenderer;
@@ -21,21 +23,40 @@ import net.neoforged.api.distmarker.OnlyIn;
 import org.joml.Matrix4f;
 
 /**
- * 侵蚀领域实体渲染器：在地面绘制蓝紫色四芒星裂缝，裂缝正中央为缓慢旋转的发光
- * 虚质空间漩涡，用于直观展示领域的范围与存在。使用贴图四边形实现，效果稳定。
+ * 侵蚀领域实体渲染器。
+ * <p>
+ * 三张贴图都平铺在地面上（不做朝向相机的广告牌、也不自转），从下往上叠三层：
+ * <ul>
+ *   <li>星形本体（{@link #STAR_BACK_TEXTURE}）：贴地的实心星形，作为裂隙的底；</li>
+ *   <li>黑洞（{@link #VOID_TEXTURE}）：按 {@link #VOID_SCALE} 缩放，alpha 已按星形本体裁剪。
+ *       它仍然平铺在地面上，但会绕 Y 轴旋转，让贴图的下边缘始终朝向角色——就像地面上的一张画，
+ *       永远正对着看的人；</li>
+ *   <li>发光边缘（{@link #STAR_TEXTURE}）：平铺在最上面，画出裂隙的发光边。</li>
+ * </ul>
+ * 提交顺序"本体 → 黑洞 → 发光边缘"（半透明类型切换时会先提交上一批，顺序是确定的）。
  */
 @OnlyIn(Dist.CLIENT)
 public class ErosionDomainRenderer extends EntityRenderer<ErosionDomainEntity> {
 
-    private static final ResourceLocation STAR_TEXTURE = SceneryStaff.prefix("textures/entity/erosion_star.png");
-    private static final ResourceLocation VOID_TEXTURE = SceneryStaff.prefix("textures/entity/xuzhikongj.png");
+    /** 裂隙的发光边缘 */
+    private static final ResourceLocation STAR_TEXTURE = SceneryStaff.prefix("textures/entity/star.png");
+    /** 裂隙的星形本体（底） */
+    private static final ResourceLocation STAR_BACK_TEXTURE = SceneryStaff.prefix("textures/entity/star_back.png");
+    /** 黑洞（已按星形本体裁剪） */
+    private static final ResourceLocation VOID_TEXTURE = SceneryStaff.prefix("textures/entity/blackhole.png");
 
     /** 领域半径，与 {@link ErosionDomainEntity} 的伤害判定半径保持一致 */
     private static final float DOMAIN_RADIUS = 10.0F;
-    /** 中央虚质空间漩涡的直径：仅覆盖星形中心的低透明度空洞 */
-    private static final float VOID_SIZE = 2.2F;
-    /** 领域持续时间（tick），与 entity.setDuration(200) 一致，用于淡入淡出 */
-    private static final int TOTAL_LIFE = 200;
+    /** 星形本体离地高度（格），避免与地表共面闪烁 */
+    private static final float BODY_HEIGHT = 0.02F;
+    /** 黑洞离地高度（格），压在星形本体之上 */
+    private static final float VOID_HEIGHT = 0.04F;
+    /** 发光边缘离地高度（格），压在黑洞之上 */
+    private static final float EDGE_HEIGHT = 0.06F;
+    /** 黑洞贴图相对裂隙的缩放（贴图本身是 20 格见方，这里按比例缩小显示） */
+    private static final float VOID_SCALE = 0.1F;
+    /** 领域持续时间（tick），与 {@link ErosionDomainEntity#DURATION_TICKS} 一致，用于淡入淡出 */
+    private static final int TOTAL_LIFE = ErosionDomainEntity.DURATION_TICKS;
 
     public ErosionDomainRenderer(EntityRendererProvider.Context context) {
         super(context);
@@ -65,21 +86,44 @@ public class ErosionDomainRenderer extends EntityRenderer<ErosionDomainEntity> {
         // 找到实际地表顶面（雪层/半砖/压力板等），让效果浮在其上。
         float localGroundY = getSurfaceHeight(entity) - (float) entity.getY();
 
-        // 底层：中央虚质空间漩涡（垫在星形下方，星形实心部分会遮住其边缘）
+        // 第一层：星形本体，贴地铺开，作为裂隙的底。
         poseStack.pushPose();
-        poseStack.translate(0.0, localGroundY + 0.02, 0.0);
-        poseStack.mulPose(Axis.YP.rotationDegrees(age * 6.0F));
-        VertexConsumer voidConsumer = buffer.getBuffer(RenderType.entityTranslucentEmissive(VOID_TEXTURE));
-        addGroundQuad(voidConsumer, poseStack.last(), VOID_SIZE / 2.0F, alpha255, packedLight);
+        poseStack.translate(0.0, localGroundY + BODY_HEIGHT, 0.0);
+        VertexConsumer bodyConsumer = buffer.getBuffer(RenderType.entityTranslucentEmissive(STAR_BACK_TEXTURE));
+        addGroundQuad(bodyConsumer, poseStack.last(), DOMAIN_RADIUS, alpha255, packedLight);
         poseStack.popPose();
 
-        // 顶层：地面四芒星裂缝。使用 entityCutoutNoCull（alpha 测试 + 不剔除背面），
-        // 正上方视角可见；中心低透明度空洞被剔除，透出下方的虚质空间。
+        // 第二层：黑洞，仍然平铺在地面上，但绕 Y 轴转到让贴图下边缘朝向角色。
+        // 贴图 alpha 已按星形本体裁剪，所以旋转后也不会露到裂隙外侧。
         poseStack.pushPose();
-        poseStack.translate(0.0, localGroundY + 0.04, 0.0);
-        VertexConsumer starConsumer = buffer.getBuffer(RenderType.entityCutoutNoCull(STAR_TEXTURE));
-        addGroundQuad(starConsumer, poseStack.last(), DOMAIN_RADIUS, alpha255, packedLight);
+        poseStack.translate(0.0, localGroundY + VOID_HEIGHT, 0.0);
+        poseStack.mulPose(Axis.YP.rotationDegrees(lowerEdgeYaw(entity)));
+        VertexConsumer voidConsumer = buffer.getBuffer(RenderType.entityTranslucentEmissive(VOID_TEXTURE));
+        addGroundQuad(voidConsumer, poseStack.last(), DOMAIN_RADIUS * VOID_SCALE, alpha255, packedLight);
         poseStack.popPose();
+
+        // 第三层：发光边缘，平铺在最上面。
+        poseStack.pushPose();
+        poseStack.translate(0.0, localGroundY + EDGE_HEIGHT, 0.0);
+        VertexConsumer edgeConsumer = buffer.getBuffer(RenderType.entityTranslucentEmissive(STAR_TEXTURE));
+        addGroundQuad(edgeConsumer, poseStack.last(), DOMAIN_RADIUS, alpha255, packedLight);
+        poseStack.popPose();
+    }
+
+    /**
+     * 计算让黑洞贴图的下边缘朝向相机（角色）所需的 Y 轴旋转角。
+     * 贴图的下边缘在局部 +Z 方向，绕 Y 轴转 θ 后 +Z 指向 (sinθ, 0, cosθ)，
+     * 令它等于"实体指向相机"的水平方向即可。
+     */
+    private float lowerEdgeYaw(ErosionDomainEntity entity) {
+        Camera camera = Minecraft.getInstance().gameRenderer.getMainCamera();
+        Vec3 cameraPos = camera.getPosition();
+        double dx = cameraPos.x - entity.getX();
+        double dz = cameraPos.z - entity.getZ();
+        if (dx * dx + dz * dz < 1.0E-6) {
+            return 0.0F;
+        }
+        return (float) Math.toDegrees(Math.atan2(dx, dz));
     }
 
     /**
@@ -100,6 +144,7 @@ public class ErosionDomainRenderer extends EntityRenderer<ErosionDomainEntity> {
 
     /**
      * 在 XZ 平面上绘制一张朝 +Y 的贴图四边形（中心位于局部原点，边长 half*2）。
+     * 贴图的下边缘（v=1）落在局部 +Z 一侧。
      */
     private void addGroundQuad(VertexConsumer consumer, PoseStack.Pose pose, float half,
                                int alpha, int light) {

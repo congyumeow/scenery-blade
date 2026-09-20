@@ -22,8 +22,11 @@ import java.util.List;
 import java.util.UUID;
 
 public class ErosionDomainEntity extends Entity {
+    /** 领域持续时间（tick）：30 秒（20 tick/秒） */
+    public static final int DURATION_TICKS = 600;
+
     private int lifeTicks = 0;
-    private int maxLife = 200; // 默认10秒
+    private int maxLife = DURATION_TICKS;
     private UUID ownerId;
     private static final int DAMAGE_INTERVAL = 20; // 每秒伤害一次
     private int timer = 0;

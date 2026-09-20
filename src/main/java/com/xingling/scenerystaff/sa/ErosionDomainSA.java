@@ -43,11 +43,11 @@ public class ErosionDomainSA extends SlashArts {
         serverLevel.playSound(null, user.getX(), user.getY(), user.getZ(),
                 chosen, user.getSoundSource(), 1.0F, 1.0F);
 
-        // 生成领域实体（位置随玩家，持续10秒）
+        // 生成领域实体（生成位置随玩家）
         ErosionDomainEntity domain = new ErosionDomainEntity(EntityRegistry.EROSION_DOMAIN.get(), serverLevel);
         domain.setPos(player.getX(), player.getY(), player.getZ());
         domain.setOwner(player);
-        domain.setDuration(200); // 10秒 (20 ticks/sec)
+        domain.setDuration(ErosionDomainEntity.DURATION_TICKS); // 30 秒 (20 ticks/sec)
         serverLevel.addFreshEntity(domain);
     }
 }
