@@ -126,7 +126,6 @@ public class ErosionDomainEntity extends Entity {
         //  - 原生敌对生物（Enemy：僵尸/骷髅/苦力怕等宿主生物）
         //  - 已进入敌对/激怒状态的中立生物（NeutralMob：铁傀儡、末影人、猪灵、僵尸猪人、狼等）
         //  - 当前以玩家为目标、或最近被玩家伤害的生物
-        // 放过与玩家和平的生物（未激怒的村民、动物、猪灵等）
         List<LivingEntity> targets = serverLevel.getEntitiesOfClass(LivingEntity.class, aabb,
                 e -> e != owner && e.isAlive()
                         && (e instanceof Enemy
@@ -174,5 +173,4 @@ public class ErosionDomainEntity extends Entity {
             compound.putUUID("Owner", this.ownerId);
         }
     }
-    // 无需重写 getAddEntityPacket：1.21.1 基类已有 getAddEntityPacket(ServerEntity) 默认实现
 }

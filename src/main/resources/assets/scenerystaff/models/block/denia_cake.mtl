@@ -1,0 +1,7 @@
+# 达妮娅的生日蛋糕 —— OBJ 材质库
+# NeoForge 的 ObjModel 解析到 "usemtl material0" 时必须能在材质库里查到该材质，
+# 否则会抛 NoSuchElementException 导致整个模型烘焙失败（表现为原版 missing model：立方体 + 黑紫格）。
+# map_Kd 写成完整 ResourceLocation，UnbakedGeometryHelper.resolveDirtyMaterial 会直接
+# 解析为 blocks 图集贴图 assets/scenerystaff/textures/block/denia_cake.png。
+newmtl material0
+map_Kd scenerystaff:block/denia_cake

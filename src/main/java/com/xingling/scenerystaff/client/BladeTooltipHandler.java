@@ -1,6 +1,8 @@
 package com.xingling.scenerystaff.client;
 
 import com.xingling.scenerystaff.SceneryStaff;
+import com.xingling.scenerystaff.item.SceneryBlades;
+import com.xingling.scenerystaff.item.WavebandUpgrade;
 import mods.flammpfeil.slashblade.item.ItemSlashBlade;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
@@ -12,6 +14,7 @@ import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.event.entity.player.ItemTooltipEvent;
 
 import java.util.List;
+import java.util.Locale;
 
 /**
  * 为「布景之杖」系列命名刀添加物品描述（tooltip）。
@@ -49,6 +52,32 @@ public class BladeTooltipHandler {
                 break;
             }
             tooltip.add(line.withStyle(ChatFormatting.LIGHT_PURPLE));
+        }
+
+        appendWavebandUpgrade(tooltip, stack);
+    }
+
+    /**
+     * 追加「达妮娅的回音频段」的强化信息（强化等级、攻击力加成、最终刀的领域冷却缩减）。
+     * <p>
+     * 数值全部来自 {@link WavebandUpgrade}，与铁砧强化和攻击力事件共用同一份常量，改一处即可。
+     */
+    private static void appendWavebandUpgrade(List<Component> tooltip, ItemStack stack) {
+        int level = WavebandUpgrade.getLevel(stack);
+        if (level <= 0) {
+            return;
+        }
+        tooltip.add(Component.translatable("tooltip.scenerystaff.waveband_level",
+                level, WavebandUpgrade.MAX_LEVEL).withStyle(ChatFormatting.AQUA));
+
+        int percent = Math.round(level * WavebandUpgrade.ATTACK_BONUS_PER_LEVEL * 100.0F);
+        tooltip.add(Component.translatable("tooltip.scenerystaff.waveband_attack", percent + "%")
+                .withStyle(ChatFormatting.GRAY));
+
+        if (SceneryBlades.isFinalBlade(stack)) {
+            float seconds = level * WavebandUpgrade.DOMAIN_COOLDOWN_REDUCTION_TICKS / 20.0F;
+            tooltip.add(Component.translatable("tooltip.scenerystaff.waveband_domain_cd",
+                    String.format(Locale.ROOT, "%.1f", seconds)).withStyle(ChatFormatting.GRAY));
         }
     }
 }

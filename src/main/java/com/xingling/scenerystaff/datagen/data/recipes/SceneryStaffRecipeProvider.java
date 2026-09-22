@@ -25,7 +25,6 @@ public class SceneryStaffRecipeProvider extends RecipeProvider {
     @Override
     protected void buildRecipes(RecipeOutput output) {
         // 下位替代刀：残景之杖
-        // A=樱花树苗（上方中间）、B=虚质、C=铁锭；D=前置刀「利刀「白鞘」」（杀敌 ≥ 50），位于正中间。
         SlashBladeShapedRecipeBuilder.shaped(SceneryStaffBladeRegistry.SCENERY_STAFF_WORN.location())
                 .pattern(" A ")
                 .pattern("BDB")
@@ -39,9 +38,6 @@ public class SceneryStaffRecipeProvider extends RecipeProvider {
                 .save(output);
 
         // 最终刀：布景之杖
-        //   .  生日蛋糕  .      （左上、右上留空）
-        //  钻石  回音频段  钻石
-        // 哭泣黑曜石 下位刀 哭泣黑曜石
         SlashBladeShapedRecipeBuilder.shaped(SceneryStaffBladeRegistry.SCENERY_STAFF.location())
                 .pattern(" C ")
                 .pattern("BAB")
@@ -59,8 +55,7 @@ public class SceneryStaffRecipeProvider extends RecipeProvider {
                 .unlockedBy("has_item", has(SlashBladeItems.SLASHBLADE.get()))
                 .save(output);
 
-        // 虚质：4 颗钻石（上下左右）+ 5 个樱花树苗（四角与中心），米字型排列。
-        // 仅注册物品与配方，暂未接入任何拔刀剑配方。
+        // 虚质
         ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ItemRegistry.XUZHI.get())
                 .pattern("SDS")
                 .pattern("DSD")
@@ -70,7 +65,7 @@ public class SceneryStaffRecipeProvider extends RecipeProvider {
                 .unlockedBy("has_cherry_sapling", has(Items.CHERRY_SAPLING))
                 .save(output);
 
-        // 达妮娅的回音频段：4 个虚质呈十字排列（上下左右），中心留空。
+        // 达妮娅的回音频段
         ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ItemRegistry.DENIA_WAVEBAND.get())
                 .pattern(" A ")
                 .pattern("A A")
@@ -79,7 +74,7 @@ public class SceneryStaffRecipeProvider extends RecipeProvider {
                 .unlockedBy("has_xuzhi", has(ItemRegistry.XUZHI.get()))
                 .save(output);
 
-        // 达妮娅的生日蛋糕：参考原版蛋糕配方，两个奶桶分别替换为甜浆果与可可豆。
+        // 达妮娅的生日蛋糕
         ShapedRecipeBuilder.shaped(RecipeCategory.FOOD, ItemRegistry.DENIA_BIRTHDAY_CAKE.get())
                 .pattern("ABC")
                 .pattern("DED")

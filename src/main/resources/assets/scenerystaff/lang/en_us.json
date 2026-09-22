@@ -21,8 +21,12 @@
   "item.scenerystaff.denia_birthday_cake.desc.1": "§dA birthday cake produced by the Deep Space Federation — allegedly free of any food safety issues.",
   "item.scenerystaff.denia_birthday_cake.desc.2": "§dOrange flavoured and exquisitely made; at Denia's own request, its surface is piled with strange hard candies and dried fruit...",
   "item.scenerystaff.denia_birthday_cake.desc.3": "§5§o\"Happy birthday — this time, I'll light the candle.\"",
+  "block.scenerystaff.denia_birthday_cake": "§d§lDenia's Birthday Cake",
   "se.scenerystaff.polymerization": "Polymerization",
   "slash_art.scenerystaff.erosion_domain": "Erosion Domain",
   "message.scenerystaff.domain_cooldown": "Erosion Domain on cooldown (%ss)",
+  "tooltip.scenerystaff.waveband_level": "Waveband Resonance: %s / %s",
+  "tooltip.scenerystaff.waveband_attack": "· Base Attack Damage +%s",
+  "tooltip.scenerystaff.waveband_domain_cd": "· Erosion Domain cooldown -%ss",
   "itemGroup.scenerystaff_tab": "★Denia★"
 }

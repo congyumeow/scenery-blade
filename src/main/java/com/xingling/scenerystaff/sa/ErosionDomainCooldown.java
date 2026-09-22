@@ -1,15 +1,20 @@
 package com.xingling.scenerystaff.sa;
 
 import com.xingling.scenerystaff.SceneryStaff;
+import com.xingling.scenerystaff.item.SceneryBlades;
+import com.xingling.scenerystaff.item.WavebandUpgrade;
 import com.xingling.scenerystaff.registry.SARegistry;
 import mods.flammpfeil.slashblade.capability.slashblade.ISlashBladeState;
 import mods.flammpfeil.slashblade.event.SlashBladeEvent;
+import mods.flammpfeil.slashblade.item.ItemSlashBlade;
 import mods.flammpfeil.slashblade.registry.SlashArtsRegistry;
 import mods.flammpfeil.slashblade.slasharts.SlashArts;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.item.ItemStack;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 
@@ -31,7 +36,7 @@ import java.util.concurrent.ConcurrentHashMap;
 @EventBusSubscriber(modid = SceneryStaff.MODID)
 public class ErosionDomainCooldown {
 
-    /** 领域冷却（tick）：35 秒 */
+    /** 领域基础冷却（tick）：35 秒。回音频段强化每次可再缩短 {@link WavebandUpgrade#DOMAIN_COOLDOWN_REDUCTION_TICKS} tick */
     public static final int COOLDOWN_TICKS = 35 * 20;
 
     /** 冷却期间改用的内置 SA：幻影刃 */
@@ -67,6 +72,24 @@ public class ErosionDomainCooldown {
             return;
         }
 
-        READY_AT.put(user.getUUID(), now + COOLDOWN_TICKS);
+        // 回音频段强化会缩短冷却；强化次数记在手里的刀上，而 PerformSlashArtEvent 不带物品栈，故这里取手持的刀
+        int cooldownTicks = WavebandUpgrade.domainCooldownTicks(findHeldFinalBlade(user), COOLDOWN_TICKS);
+        READY_AT.put(user.getUUID(), now + cooldownTicks);
+    }
+
+    /**
+     * 取使用者手上正在挥舞的那把最终刀（优先主手）。
+     * <p>
+     * 强化等级存放在刀上，而 {@link SlashBladeEvent.PerformSlashArtEvent} 只给实体和刀状态、
+     * 不给物品栈，因此只能从手上取。非最终刀返回空栈，冷却保持原值。
+     */
+    private static ItemStack findHeldFinalBlade(LivingEntity user) {
+        for (InteractionHand hand : InteractionHand.values()) {
+            ItemStack stack = user.getItemInHand(hand);
+            if (stack.getItem() instanceof ItemSlashBlade && SceneryBlades.isFinalBlade(stack)) {
+                return stack;
+            }
+        }
+        return ItemStack.EMPTY;
     }
 }

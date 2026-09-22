@@ -21,8 +21,12 @@
   "item.scenerystaff.denia_birthday_cake.desc.1": "§d深空联合出品的生日蛋糕，据说绝对不会有任何食品安全问题。",
   "item.scenerystaff.denia_birthday_cake.desc.2": "§d橘子口味，做工精致；应达妮娅本人要求，表面还加满了奇怪的硬质糖果与果干……",
   "item.scenerystaff.denia_birthday_cake.desc.3": "§5§o「生日快乐——这一次，蜡烛由我来点。」",
+  "block.scenerystaff.denia_birthday_cake": "§d§l达妮娅的生日蛋糕",
   "se.scenerystaff.polymerization": "聚合·聚爆",
   "slash_art.scenerystaff.erosion_domain": "侵蚀领域",
   "message.scenerystaff.domain_cooldown": "侵蚀领域冷却中（%s 秒）",
+  "tooltip.scenerystaff.waveband_level": "回音频段强化：%s / %s",
+  "tooltip.scenerystaff.waveband_attack": "· 基础攻击力 +%s",
+  "tooltip.scenerystaff.waveband_domain_cd": "· 侵蚀领域冷却 -%ss",
   "itemGroup.scenerystaff_tab": "★达妮娅★"
 }

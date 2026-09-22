@@ -23,11 +23,13 @@ public class SceneryStaff {
 
     public SceneryStaff(IEventBus modEventBus) {
         SoundRegistry.REGISTRY.register(modEventBus);
+        BlockRegistry.REGISTRY.register(modEventBus);
         ItemRegistry.REGISTRY.register(modEventBus);
         ItemTabRegistry.REGISTRY.register(modEventBus);
         SERegistry.REGISTRY.register(modEventBus);
         SARegistry.REGISTRY.register(modEventBus);
         ComboStateRegistry.COMBO_STATE.register(modEventBus);
         EntityRegistry.REGISTRY.register(modEventBus);
+        DataComponentRegistry.REGISTRY.register(modEventBus);
     }
 }

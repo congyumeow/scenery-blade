@@ -81,8 +81,6 @@ public class ErosionDomainRenderer extends EntityRenderer<ErosionDomainEntity> {
         }
         int alpha255 = (int) (alpha * 255.0F);
 
-        // 薄雪层(snow_layer)是非实体方块，玩家会沉到下层地面（实体 Y = 地面顶），
-        // 而雪层本体占据 0~0.125，会盖住效果。用 OUTLINE 射线（含非实体方块的轮廓形状）
         // 找到实际地表顶面（雪层/半砖/压力板等），让效果浮在其上。
         float localGroundY = getSurfaceHeight(entity) - (float) entity.getY();
 
@@ -94,7 +92,6 @@ public class ErosionDomainRenderer extends EntityRenderer<ErosionDomainEntity> {
         poseStack.popPose();
 
         // 第二层：黑洞，仍然平铺在地面上，但绕 Y 轴转到让贴图下边缘朝向角色。
-        // 贴图 alpha 已按星形本体裁剪，所以旋转后也不会露到裂隙外侧。
         poseStack.pushPose();
         poseStack.translate(0.0, localGroundY + VOID_HEIGHT, 0.0);
         poseStack.mulPose(Axis.YP.rotationDegrees(lowerEdgeYaw(entity)));

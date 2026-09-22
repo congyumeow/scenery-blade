@@ -1,0 +1,12 @@
+{
+  "loader": "neoforge:obj",
+  "model": "scenerystaff:models/block/denia_cake_6.obj",
+  "mtl_override": "scenerystaff:models/block/denia_cake.mtl",
+  "textures": {
+    "particle": "scenerystaff:block/denia_cake"
+  },
+  "automatic_culling": true,
+  "shade_quads": true,
+  "flip_v": true,
+  "emissive_ambient": false
+}

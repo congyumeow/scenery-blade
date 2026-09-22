@@ -61,7 +61,7 @@ public class SceneryStaffBladeRegistry {
                 )
         );
 
-        // 下位替代刀：残景之杖（前中期过渡；无专属 SE，剑技为原版垂直波刃）
+        // 下位替代刀：残景之杖
         bootstrap.register(
                 SCENERY_STAFF_WORN,
                 new SlashBladeDefinition(
