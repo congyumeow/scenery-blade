@@ -1,9 +1,7 @@
 {
   "item.scenerystaff.scenery_staff": "Scenery Staff ★Denia★",
   "item.scenerystaff.scenery_staff.desc.1": "§dThe Scenery Staff shaped in Denia's name — it can unfold an all-devouring Erosion Domain.",
-  "item.scenerystaff.scenery_staff.desc.2": "§dForged from Xuzhi, a waveband, and a birthday cake that arrived far too late.",
-  "item.scenerystaff.scenery_staff.desc.3": "§dWhen the domain falls, every foe turns to embers in a chain of polymerization.",
-  "item.scenerystaff.scenery_staff.desc.4": "§5§o\"The stage is set — time to close the curtain.\"",
+  "item.scenerystaff.scenery_staff.desc.2": "§5§o\"The stage is set — time to close the curtain.\"",
   "item.scenerystaff.scenery_staff_worn": "Worn Scenery Staff",
   "item.scenerystaff.scenery_staff_worn.desc.1": "§7A rough Scenery Staff assembled from Xuzhi and a broken blade blank.",
   "item.scenerystaff.scenery_staff_worn.desc.2": "§7It cannot unfold a domain yet — only a thin wave edge to guard its bearer.",
@@ -28,5 +26,8 @@
   "tooltip.scenerystaff.waveband_level": "Waveband Resonance: %s / %s",
   "tooltip.scenerystaff.waveband_attack": "· Base Attack Damage +%s",
   "tooltip.scenerystaff.waveband_domain_cd": "· Erosion Domain cooldown -%ss",
+  "jade.scenerystaff.polymerization": "Polymerization: %s / %s",
+  "jade.scenerystaff.polymerization_decay": "· Decays in: %ss",
+  "config.jade.plugin_scenerystaff.polymerization": "Polymerization",
   "itemGroup.scenerystaff_tab": "★Denia★"
 }

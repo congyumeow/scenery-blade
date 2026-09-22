@@ -1,6 +1,5 @@
 package com.xingling.scenerystaff.entity;
 
-import com.xingling.scenerystaff.registry.SoundRegistry;
 import com.xingling.scenerystaff.se.PolymerizationSE;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
@@ -137,17 +136,8 @@ public class ErosionDomainEntity extends Entity {
         for (LivingEntity target : targets) {
             // 造成伤害
             target.hurt(damageSource, DAMAGE_AMOUNT);
-            // 附加聚爆层数（每次伤害+1层，与SE共享同一计数）
-            int count = target.getPersistentData().getInt(PolymerizationSE.TAG_COUNT);
-            count++;
-            target.getPersistentData().putInt(PolymerizationSE.TAG_COUNT, count);
-            // 如果达到10层，触发聚爆额外伤害（复用SE逻辑）
-            if (count >= 10) {
-                target.getPersistentData().putInt(PolymerizationSE.TAG_COUNT, 0);
-                target.hurt(damageSource, PolymerizationSE.EXPLOSION_DAMAGE);
-                serverLevel.playSound(null, target.getX(), target.getY(), target.getZ(),
-                        SoundRegistry.DENIA1.get(), target.getSoundSource(), 1.0F, 1.0F);
-            }
+            // 附加聚爆层数（每次伤害 +1 层，与 SE 共享同一计数；叠满由 addStack 触发额外伤害与音效）
+            PolymerizationSE.addStack(target, damageSource);
         }
     }
 

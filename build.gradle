@@ -108,10 +108,24 @@ repositories {
     maven {
         url "https://cursemaven.com"
     }
+
+    // Jade：可选兼容依赖（仅编译期）。若本地无网络，可把 Jade 的 jar 放进 libs/ 并改用
+    // compileOnly files('libs/Jade-1.21.1-NeoForge-15.10.6.jar')
+    maven {
+        name = "Modrinth"
+        url = "https://api.modrinth.com/maven"
+        content {
+            includeGroup "maven.modrinth"
+        }
+    }
 }
 
 dependencies {
     implementation "curse.maven:slashblade-resharped-1022428:8072550"
+
+    // Jade 是可选依赖：只用 compileOnly，既不会打进本模组的 jar，也不会成为运行时依赖。
+    // 插件类由 Jade 自己扫描加载，未安装 Jade 时本模组照常加载（该类不会被任何代码引用）。
+    compileOnly "maven.modrinth:jade:eYz2YBGT"
 }
 
 tasks.named('processResources', ProcessResources).configure {

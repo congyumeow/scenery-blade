@@ -1,9 +1,7 @@
 {
   "item.scenerystaff.scenery_staff": "布景之杖 ★达妮娅★",
   "item.scenerystaff.scenery_staff.desc.1": "§d以达妮娅之名成形的布景之杖，能展开吞噬一切的侵蚀领域。",
-  "item.scenerystaff.scenery_staff.desc.2": "§d由虚质、回音频段与一份迟到太久的生日蛋糕共同铸成。",
-  "item.scenerystaff.scenery_staff.desc.3": "§d当领域落下，敌对者皆在聚爆的连环回响中化为余烬。",
-  "item.scenerystaff.scenery_staff.desc.4": "§5§o「布景已经搭好——该谢幕了。」",
+  "item.scenerystaff.scenery_staff.desc.2": "§5§o「布景已经搭好——该谢幕了。」",
   "item.scenerystaff.scenery_staff_worn": "残景之杖",
   "item.scenerystaff.scenery_staff_worn.desc.1": "§7由虚质与残破刀胚拼合而成的布景之杖雏形。",
   "item.scenerystaff.scenery_staff_worn.desc.2": "§7它尚不能展开领域，只能挥出单薄的波刃勉强护身。",
@@ -28,5 +26,8 @@
   "tooltip.scenerystaff.waveband_level": "回音频段强化：%s / %s",
   "tooltip.scenerystaff.waveband_attack": "· 基础攻击力 +%s",
   "tooltip.scenerystaff.waveband_domain_cd": "· 侵蚀领域冷却 -%ss",
+  "jade.scenerystaff.polymerization": "聚合·聚爆：%s / %s 层",
+  "jade.scenerystaff.polymerization_decay": "· 下次衰减：%ss",
+  "config.jade.plugin_scenerystaff.polymerization": "聚合·聚爆",
   "itemGroup.scenerystaff_tab": "★达妮娅★"
 }
