@@ -28,8 +28,8 @@ import java.util.concurrent.ConcurrentHashMap;
  * SlashBlade 在释放 SA 时会计算好连击状态、再发出 {@link SlashBladeEvent.PerformSlashArtEvent}，
  * 监听方可以改掉这个连击状态。于是这里做两件事：
  * <ul>
- *   <li>刀上的 SA 是侵蚀领域、且不在冷却中：放行，同时开始 {@link #COOLDOWN_TICKS} 的冷却；</li>
- *   <li>还在冷却中：把连击状态换成拔刀剑内置的幻影刃
+ *   <li>刀上的 SA 是侵蚀领域、<b>蓄力成功</b>、且不在冷却中：放行，同时开始冷却；</li>
+ *   <li>冷却中又<b>蓄力成功</b>：把连击状态换成拔刀剑内置的幻影刃
  *       （{@code slashblade:drive_horizontal}），并提示剩余秒数。</li>
  * </ul>
  */
@@ -57,18 +57,34 @@ public class ErosionDomainCooldown {
         long now = user.level().getGameTime();
         long readyAt = READY_AT.getOrDefault(user.getUUID(), Long.MIN_VALUE);
 
+        // 只有「真正放出来」的剑技才进冷却。
+        // SlashBlade 在 doChargeAction 里无论蓄力够不够都会发出 PerformSlashArtEvent：
+        // 蓄力不足时 type = Fail，而 doArts(Fail) 返回的是 ComboStateRegistry.NONE，
+        // 领域实体根本不会生成。若在这里也无条件进冷却，玩家拿上刀随手点一下
+        // 就会被判 35 秒冷却——表现就是「上手就带 35s CD」。
+        SlashArts.ArtsType type = event.getType();
+        boolean released = type == SlashArts.ArtsType.Success
+                || type == SlashArts.ArtsType.Jackpot
+                || type == SlashArts.ArtsType.Super;
+
         if (now < readyAt) {
-            // 冷却中：改用内置的幻影刃
+            // 冷却中：只有确实想放领域（蓄力成功）时才换成幻影刃并提示，空点保持安静
+            if (!released) {
+                return;
+            }
             SlashArts phantomEdge = SlashArtsRegistry.REGISTRY.get(PHANTOM_EDGE);
             if (phantomEdge != null) {
-                SlashArts.ArtsType type = event.getType();
-                event.setComboState(phantomEdge.doArts(type == null ? SlashArts.ArtsType.Success : type, user));
+                event.setComboState(phantomEdge.doArts(type, user));
             }
             if (user instanceof ServerPlayer player) {
                 long remainSeconds = (readyAt - now + 19L) / 20L;
                 player.displayClientMessage(
                         Component.translatable("message.scenerystaff.domain_cooldown", remainSeconds), true);
             }
+            return;
+        }
+
+        if (!released) {
             return;
         }
 
