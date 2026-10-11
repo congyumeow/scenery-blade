@@ -1,9 +1,12 @@
 package com.xingling.scenerystaff.sa;
 
 import com.xingling.scenerystaff.SceneryStaff;
+import com.xingling.scenerystaff.blade.SceneryIds;
 import com.xingling.scenerystaff.entity.GiantSwordEntity;
 import com.xingling.scenerystaff.registry.EntityRegistry;
 import com.xingling.scenerystaff.registry.SoundRegistry;
+import mods.flammpfeil.slashblade.init.DefaultResources;
+import mods.flammpfeil.slashblade.registry.combo.ComboState;
 import mods.flammpfeil.slashblade.slasharts.SlashArts;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.LivingEntity;
@@ -21,7 +24,7 @@ import net.minecraft.world.phys.Vec3;
  * 剑技行为由 ComboState 驱动 —— 剑技映射到 {@code scenerystaff:giant_sword} 连击状态，
  * 由该状态的 TimeLineTickAction 在第 0 帧回调 {@link #doGiantSword(LivingEntity)}。
  * <p>
- * 释放时：播 Aemeath 语音 → 按「刀攻击力 × 1.7」算好这一发伤害 →
+ * 释放时：播 Aemeath 语音 → 按「刀攻击力 × {@link GiantSwordEntity#DAMAGE_MULTIPLIER}」算好这一发伤害 →
  * 在玩家脚下地表生成 {@link GiantSwordEntity}（离地 30 格，1 秒后落地）。
  * <p>
  * 充能攒满才能释放；未攒满时由 {@link SaChargeGate} 换成幻影刃（见 {@link SaCharge}）。
@@ -32,7 +35,26 @@ public class GiantSwordSA extends SlashArts {
     public static final double LAND_DISTANCE = 3.0D;
 
     public GiantSwordSA() {
-        super(entity -> SceneryStaff.prefix("giant_sword"));
+        super(entity -> SceneryIds.GIANT_SWORD);
+    }
+
+    /**
+     * 本剑技的连击状态。
+     * <p>
+     * 与 {@link ErosionDomainSA#createComboState()} 同理：剑技的行为编排随剑技走，
+     * 注册表只负责注册。
+     */
+    public static ComboState createComboState() {
+        return ComboState.Builder.newInstance()
+                .startAndEnd(0, 15)
+                .priority(50)
+                .motionLoc(DefaultResources.ExMotionLocation)
+                .next(entity -> mods.flammpfeil.slashblade.registry.ComboStateRegistry.NONE.getId())
+                .nextOfTimeout(entity -> mods.flammpfeil.slashblade.registry.ComboStateRegistry.NONE.getId())
+                .addTickAction(ComboState.TimeLineTickAction.getBuilder()
+                        .put(0, GiantSwordSA::doGiantSword)
+                        .build())
+                .build();
     }
 
     /** 由连击状态的时间轴回调。只应在服务端调用。 */
@@ -48,7 +70,7 @@ public class GiantSwordSA extends SlashArts {
         serverLevel.playSound(null, player.getX(), player.getY(), player.getZ(),
                 SoundRegistry.AEMEATH.get(), player.getSoundSource(), 1.0F, 1.0F);
 
-        // AOE 伤害 = 释放瞬间的刀攻击力 × 1.7。
+        // AOE 伤害 = 释放瞬间的刀攻击力 × GiantSwordEntity.DAMAGE_MULTIPLIER（当前 3.4）。
         // 取 ATTACK_DAMAGE 属性：它汇总了刀自身的基础攻击（含耀魂带来的提升）以及力量等增益；
         // 在这里算好后存进实体，所以下落途中换装不会改变这一发伤害。
         double damage = player.getAttributeValue(Attributes.ATTACK_DAMAGE)

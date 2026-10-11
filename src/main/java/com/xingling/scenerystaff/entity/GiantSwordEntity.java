@@ -52,6 +52,13 @@ public class GiantSwordEntity extends Entity {
     public static final float AOE_RADIUS = 10.0F;
     /** AOE 伤害系数：刀攻击力 × 3.4 */
     public static final float DAMAGE_MULTIPLIER = 3.4F;
+    /**
+     * 剑长（格）：渲染缩放与实体碰撞箱都取自这一个值。
+     * <p>
+     * {@code EntityRegistry} 的 {@code sized} 与 {@code GiantSwordRenderer} 的目标长度
+     * 以前各写一份 {@code 8.0F}，属于必须人工同步的隐患，现统一引用本常量。
+     */
+    public static final float SWORD_LENGTH = 8.0F;
 
     private static final int PHASE_FALLING = 0;
     private static final int PHASE_GROUND = 1;
@@ -74,7 +81,7 @@ public class GiantSwordEntity extends Entity {
      * 生成时由服务端调用。
      *
      * @param owner  施术者（决定伤害归属）
-     * @param damage 这一发 AOE 的伤害（已按刀攻击力 × 1.7 算好）
+     * @param damage 这一发 AOE 的伤害（已按刀攻击力 × {@link #DAMAGE_MULTIPLIER} 算好）
      * @param landX  落点 X（由剑技按准星方向算出）
      * @param landZ  落点 Z
      * @param landY  落点地面高度（由服务端在落点处向下射线取得）

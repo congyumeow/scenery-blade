@@ -2,7 +2,7 @@ package com.xingling.scenerystaff.sa;
 
 import com.mojang.serialization.Codec;
 import com.xingling.scenerystaff.SceneryStaff;
-import com.xingling.scenerystaff.item.SceneryBlades;
+import com.xingling.scenerystaff.blade.SceneryBlades;
 import com.xingling.scenerystaff.registry.SARegistry;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.resources.ResourceLocation;

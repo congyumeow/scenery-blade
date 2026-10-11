@@ -51,8 +51,8 @@ public class GiantSwordRenderer extends EntityRenderer<GiantSwordEntity> {
     private static final ResourceLocation MODEL = SceneryStaff.prefix("model/qimingxing/qimingxing.obj");
     private static final ResourceLocation TEXTURE = SceneryStaff.prefix("model/qimingxing/qimingxing_extra.png");
 
-    /** 目标剑长：8 格 */
-    private static final float TARGET_LENGTH = 8.0F;
+    /** 目标剑长（格）：与实体碰撞箱同源，见 {@link GiantSwordEntity#SWORD_LENGTH} */
+    private static final float TARGET_LENGTH = GiantSwordEntity.SWORD_LENGTH;
     /** 模型长轴（X 轴）跨度：实测 -266.34 .. 68.03，合计 334.37 */
     private static final float MODEL_LENGTH = 334.37F;
     /** 缩放系数 ≈ 0.0239（约 SlashBlade 默认刀身缩放 0.0075 的 3.2 倍） */

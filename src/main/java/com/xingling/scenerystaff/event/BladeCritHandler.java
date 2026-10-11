@@ -1,8 +1,8 @@
 package com.xingling.scenerystaff.event;
 
 import com.xingling.scenerystaff.SceneryStaff;
-import com.xingling.scenerystaff.item.SceneryBlades;
-import com.xingling.scenerystaff.item.WavebandUpgrade;
+import com.xingling.scenerystaff.blade.SceneryBlades;
+import com.xingling.scenerystaff.blade.WavebandUpgrade;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
@@ -47,12 +47,13 @@ public final class BladeCritHandler {
             return;
         }
 
-        int level = WavebandUpgrade.getLevel(held);
-        if (player.getRandom().nextDouble() >= WavebandUpgrade.critChanceFor(level)) {
+        // 一次取面板：判定与倍率同源，不会出现「按 A 等级判定、按 B 等级结算」
+        WavebandUpgrade.CritStats crit = WavebandUpgrade.critOf(held);
+        if (player.getRandom().nextDouble() >= crit.chance()) {
             return;
         }
 
-        event.setAmount((float) (event.getAmount() * WavebandUpgrade.critDamageFor(level)));
+        event.setAmount((float) (event.getAmount() * crit.damage()));
 
         // 原版暴击的视觉反馈，让玩家能看出这一下是暴击
         if (event.getEntity().level() instanceof ServerLevel serverLevel) {

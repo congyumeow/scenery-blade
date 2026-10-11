@@ -1,9 +1,12 @@
 package com.xingling.scenerystaff.sa;
 
 import com.xingling.scenerystaff.SceneryStaff;
+import com.xingling.scenerystaff.blade.SceneryIds;
 import com.xingling.scenerystaff.entity.ErosionDomainEntity;
 import com.xingling.scenerystaff.registry.EntityRegistry;
 import com.xingling.scenerystaff.registry.SoundRegistry;
+import mods.flammpfeil.slashblade.init.DefaultResources;
+import mods.flammpfeil.slashblade.registry.combo.ComboState;
 import mods.flammpfeil.slashblade.slasharts.SlashArts;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvent;
@@ -23,7 +26,27 @@ public class ErosionDomainSA extends SlashArts {
 
     public ErosionDomainSA() {
         // 普通/完美变式统一进入 erosion_domain 连击状态
-        super(entity -> SceneryStaff.prefix("erosion_domain"));
+        super(entity -> SceneryIds.EROSION_DOMAIN);
+    }
+
+    /**
+     * 本剑技的连击状态。
+     * <p>
+     * 剑技的「行为编排」——时间轴、优先级、动作帧、结束后回归哪个状态——属于剑技自身，
+     * 因此构建器放在这里；{@code ComboStateRegistry} 只负责把它注册进注册表。
+     * 原先这段编排写在注册表类里，导致「改剑技行为」要动注册表、而注册表还引用了本类。
+     */
+    public static ComboState createComboState() {
+        return ComboState.Builder.newInstance()
+                .startAndEnd(0, 15)
+                .priority(50)
+                .motionLoc(DefaultResources.ExMotionLocation)
+                .next(entity -> mods.flammpfeil.slashblade.registry.ComboStateRegistry.NONE.getId())
+                .nextOfTimeout(entity -> mods.flammpfeil.slashblade.registry.ComboStateRegistry.NONE.getId())
+                .addTickAction(ComboState.TimeLineTickAction.getBuilder()
+                        .put(0, ErosionDomainSA::doErosionDomain)
+                        .build())
+                .build();
     }
 
     /**

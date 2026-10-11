@@ -1,7 +1,7 @@
 package com.xingling.scenerystaff.event;
 
 import com.xingling.scenerystaff.SceneryStaff;
-import com.xingling.scenerystaff.item.SceneryBlades;
+import com.xingling.scenerystaff.blade.SceneryBlades;
 import mods.flammpfeil.slashblade.capability.slashblade.BladeStateAccess;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;

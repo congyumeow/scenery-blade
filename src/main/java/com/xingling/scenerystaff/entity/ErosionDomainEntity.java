@@ -30,7 +30,14 @@ public class ErosionDomainEntity extends Entity {
     private static final int DAMAGE_INTERVAL = 20; // 每秒伤害一次
     private int timer = 0;
     private static final float DAMAGE_AMOUNT = 3.0F;
-    private static final float RADIUS = 10.0F;
+    /**
+     * 领域半径（格）。
+     * <p>
+     * <b>伤害判定与渲染光圈共用这一个值</b>：判定在这里（{@code AABB.inflate} + 距离平方），
+     * 光圈画在 {@code ErosionDomainRenderer}。之前渲染器自带一份 {@code 10.0F}，
+     * 一旦有人只改一边，就会出现「打到 10 格、看着只有 8 格」的错位。
+     */
+    public static final float RADIUS = 10.0F;
 
     public ErosionDomainEntity(EntityType<?> type, Level level) {
         super(type, level);

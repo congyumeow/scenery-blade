@@ -1,4 +1,4 @@
-package com.xingling.scenerystaff.item;
+package com.xingling.scenerystaff.blade;
 
 import com.xingling.scenerystaff.registry.DataComponentRegistry;
 import com.xingling.scenerystaff.registry.ItemRegistry;
@@ -91,25 +91,36 @@ public final class WavebandUpgrade {
         return clamped <= 0 ? 0.0D : baseAttack * ATTACK_BONUS_PER_LEVEL * clamped;
     }
 
-    /** 纯数值部分：等级 → 暴击率（0.20 线性升到 0.80） */
-    public static double critChanceFor(int level) {
+    /**
+     * 一把刀的暴击面板。
+     * <p>
+     * <b>「等级 → 暴击」只有这一条出口</b>：暴击判定与 tooltip 都只消费本 record，
+     * 不再各自从等级推算。在此之前同时存在 {@code critChanceFor(level)} 与
+     * {@code critChanceOf(stack)} 两套入口，只改其中一条不会编译失败，属于隐蔽的分叉点。
+     */
+    public record CritStats(double chance, double damage) {
+
+        /** 暴击率的百分比整数（显示用，如 0.35 → 35） */
+        public int chancePercent() {
+            return (int) Math.round(chance * 100.0D);
+        }
+
+        /** 暴击伤害的百分比整数（显示用，如 1.72 → 172） */
+        public int damagePercent() {
+            return (int) Math.round(damage * 100.0D);
+        }
+    }
+
+    /** 这把刀当前的暴击面板 */
+    public static CritStats critOf(ItemStack stack) {
+        return critForLevel(getLevel(stack));
+    }
+
+    /** 纯数值部分：等级 → 暴击面板（0.20/1.50 线性升到 0.80/2.80） */
+    public static CritStats critForLevel(int level) {
         int clamped = Mth.clamp(level, 0, MAX_LEVEL);
-        return CRIT_CHANCE_BASE + (CRIT_CHANCE_MAX - CRIT_CHANCE_BASE) * clamped / MAX_LEVEL;
-    }
-
-    /** 纯数值部分：等级 → 暴击伤害倍率（1.50 线性升到 2.80） */
-    public static double critDamageFor(int level) {
-        int clamped = Mth.clamp(level, 0, MAX_LEVEL);
-        return CRIT_DAMAGE_BASE + (CRIT_DAMAGE_MAX - CRIT_DAMAGE_BASE) * clamped / MAX_LEVEL;
-    }
-
-    /** 刀当前的暴击率 */
-    public static double critChanceOf(ItemStack stack) {
-        return critChanceFor(getLevel(stack));
-    }
-
-    /** 刀当前的暴击伤害倍率 */
-    public static double critDamageOf(ItemStack stack) {
-        return critDamageFor(getLevel(stack));
+        double chance = CRIT_CHANCE_BASE + (CRIT_CHANCE_MAX - CRIT_CHANCE_BASE) * clamped / MAX_LEVEL;
+        double damage = CRIT_DAMAGE_BASE + (CRIT_DAMAGE_MAX - CRIT_DAMAGE_BASE) * clamped / MAX_LEVEL;
+        return new CritStats(chance, damage);
     }
 }

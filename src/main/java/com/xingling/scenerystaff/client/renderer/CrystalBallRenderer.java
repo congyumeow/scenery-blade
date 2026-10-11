@@ -1,4 +1,4 @@
-package com.xingling.scenerystaff.client.render;
+package com.xingling.scenerystaff.client.renderer;
 
 import com.mojang.blaze3d.vertex.DefaultVertexFormat;
 import com.mojang.blaze3d.vertex.PoseStack;

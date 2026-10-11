@@ -45,8 +45,6 @@ public class ErosionDomainRenderer extends EntityRenderer<ErosionDomainEntity> {
     /** 黑洞（已按星形本体裁剪） */
     private static final ResourceLocation VOID_TEXTURE = SceneryStaff.prefix("textures/entity/blackhole.png");
 
-    /** 领域半径，与 {@link ErosionDomainEntity} 的伤害判定半径保持一致 */
-    private static final float DOMAIN_RADIUS = 10.0F;
     /** 星形本体离地高度（格），避免与地表共面闪烁 */
     private static final float BODY_HEIGHT = 0.02F;
     /** 黑洞离地高度（格），压在星形本体之上 */
@@ -88,7 +86,7 @@ public class ErosionDomainRenderer extends EntityRenderer<ErosionDomainEntity> {
         poseStack.pushPose();
         poseStack.translate(0.0, localGroundY + BODY_HEIGHT, 0.0);
         VertexConsumer bodyConsumer = buffer.getBuffer(RenderType.entityTranslucentEmissive(STAR_BACK_TEXTURE));
-        addGroundQuad(bodyConsumer, poseStack.last(), DOMAIN_RADIUS, alpha255, packedLight);
+        addGroundQuad(bodyConsumer, poseStack.last(), ErosionDomainEntity.RADIUS, alpha255, packedLight);
         poseStack.popPose();
 
         // 第二层：黑洞，仍然平铺在地面上，但绕 Y 轴转到让贴图下边缘朝向角色。
@@ -96,14 +94,14 @@ public class ErosionDomainRenderer extends EntityRenderer<ErosionDomainEntity> {
         poseStack.translate(0.0, localGroundY + VOID_HEIGHT, 0.0);
         poseStack.mulPose(Axis.YP.rotationDegrees(lowerEdgeYaw(entity)));
         VertexConsumer voidConsumer = buffer.getBuffer(RenderType.entityTranslucentEmissive(VOID_TEXTURE));
-        addGroundQuad(voidConsumer, poseStack.last(), DOMAIN_RADIUS * VOID_SCALE, alpha255, packedLight);
+        addGroundQuad(voidConsumer, poseStack.last(), ErosionDomainEntity.RADIUS * VOID_SCALE, alpha255, packedLight);
         poseStack.popPose();
 
         // 第三层：发光边缘，平铺在最上面。
         poseStack.pushPose();
         poseStack.translate(0.0, localGroundY + EDGE_HEIGHT, 0.0);
         VertexConsumer edgeConsumer = buffer.getBuffer(RenderType.entityTranslucentEmissive(STAR_TEXTURE));
-        addGroundQuad(edgeConsumer, poseStack.last(), DOMAIN_RADIUS, alpha255, packedLight);
+        addGroundQuad(edgeConsumer, poseStack.last(), ErosionDomainEntity.RADIUS, alpha255, packedLight);
         poseStack.popPose();
     }
 

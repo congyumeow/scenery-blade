@@ -1,6 +1,7 @@
 package com.xingling.scenerystaff.datagen.data.recipes;
 
 import com.xingling.scenerystaff.SceneryStaff;
+import com.xingling.scenerystaff.blade.SceneryIds;
 import com.xingling.scenerystaff.datagen.data.blades.SceneryStaffBladeRegistry;
 import com.xingling.scenerystaff.registry.ItemRegistry;
 import mods.flammpfeil.slashblade.recipe.RequestDefinition;
@@ -45,7 +46,7 @@ public class SceneryStaffRecipeProvider extends RecipeProvider {
                 .pattern("C C")
                 // 正中间：基础刀「潮汐」，需已累积 100 杀敌数
                 .define('D', SlashBladeIngredient.of(RequestDefinition.Builder.newInstance()
-                        .name(SceneryStaff.prefix("chaoxi"))
+                        .name(SceneryIds.CHAOXI)
                         .killCount(100)
                         .build()))
                 .define('A', Items.CHERRY_SAPLING)
@@ -65,7 +66,7 @@ public class SceneryStaffRecipeProvider extends RecipeProvider {
                 .define('D', Items.CRYING_OBSIDIAN)
                 // 下位刀：需已累积 1000 杀敌数 + 20000 耀魂（ProudSoul）
                 .define('E', SlashBladeIngredient.of(RequestDefinition.Builder.newInstance()
-                        .name(SceneryStaff.prefix("scenery_staff_worn"))
+                        .name(SceneryIds.SCENERY_STAFF_WORN)
                         .killCount(1000)
                         .proudSoul(20000)
                         .build()))
@@ -82,7 +83,7 @@ public class SceneryStaffRecipeProvider extends RecipeProvider {
                 .define('B', Items.IRON_INGOT)
                 // 正中间：基础刀「潮汐」，需已累积 100 杀敌数（与残景之杖统一）
                 .define('X', SlashBladeIngredient.of(RequestDefinition.Builder.newInstance()
-                        .name(SceneryStaff.prefix("chaoxi"))
+                        .name(SceneryIds.CHAOXI)
                         .killCount(100)
                         .build()))
                 .unlockedBy("has_item", has(SlashBladeItems.SLASHBLADE.get()))
@@ -99,7 +100,7 @@ public class SceneryStaffRecipeProvider extends RecipeProvider {
                 .define('D', Items.CRYING_OBSIDIAN)
                 // 下位刀：启明星，需已累积 1000 杀敌数 + 20000 耀魂（ProudSoul）
                 .define('E', SlashBladeIngredient.of(RequestDefinition.Builder.newInstance()
-                        .name(SceneryStaff.prefix("qimingxing_worn"))
+                        .name(SceneryIds.QIMINGXING_WORN)
                         .killCount(1000)
                         .proudSoul(20000)
                         .build()))

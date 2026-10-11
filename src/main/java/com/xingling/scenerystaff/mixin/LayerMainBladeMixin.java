@@ -1,8 +1,7 @@
 package com.xingling.scenerystaff.mixin;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.xingling.scenerystaff.SceneryStaff;
-import mods.flammpfeil.slashblade.capability.slashblade.BladeStateAccess;
+import com.xingling.scenerystaff.blade.SceneryBlades;
 import mods.flammpfeil.slashblade.client.renderer.layers.LayerMainBlade;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.world.entity.LivingEntity;
@@ -37,12 +36,11 @@ public class LayerMainBladeMixin {
         if (hotbarBlade.isEmpty()) {
             return;
         }
-        // 仅拦截本模组的刀（以刀模型命名空间判定），其他拔刀剑保持原有的待机刀表现
-        boolean isSceneryBlade = BladeStateAccess.of(hotbarBlade)
-                .flatMap(state -> state.getModel())
-                .map(model -> model.getNamespace().equals(SceneryStaff.MODID))
-                .orElse(false);
-        if (isSceneryBlade) {
+        // 仅拦截本模组的刀（以刀模型命名空间判定），其他拔刀剑保持原有的待机刀表现。
+        // 判定走 SceneryBlades.isOurModel：这里要的是「模型属于本模组」，
+        // 与 SceneryBlades.isSceneryBlade（按注册 ID、只认布景之杖线）不是一回事，
+        // 用错会漏掉启明星线的两把刀。
+        if (SceneryBlades.isOurModel(hotbarBlade)) {
             ci.cancel();
         }
     }

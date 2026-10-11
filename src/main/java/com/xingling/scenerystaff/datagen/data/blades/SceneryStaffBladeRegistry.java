@@ -1,6 +1,7 @@
 package com.xingling.scenerystaff.datagen.data.blades;
 
 import com.xingling.scenerystaff.SceneryStaff;
+import com.xingling.scenerystaff.blade.SceneryIds;
 import com.xingling.scenerystaff.registry.ItemTabRegistry;
 import com.xingling.scenerystaff.registry.SARegistry;
 import com.xingling.scenerystaff.registry.SERegistry;
@@ -22,7 +23,7 @@ import java.util.List;
 
 public class SceneryStaffBladeRegistry {
     public static final ResourceKey<SlashBladeDefinition> SCENERY_STAFF =
-            ResourceKey.create(SlashBladeDefinition.REGISTRY_KEY, SceneryStaff.prefix("scenery_staff"));
+            ResourceKey.create(SlashBladeDefinition.REGISTRY_KEY, SceneryIds.SCENERY_STAFF);
 
     /**
      * 下位替代刀：残景之杖。
@@ -30,7 +31,7 @@ public class SceneryStaffBladeRegistry {
      * 剑技使用 SlashBlade 自带垂直波刃，作为前中期过渡刀使用。
      */
     public static final ResourceKey<SlashBladeDefinition> SCENERY_STAFF_WORN =
-            ResourceKey.create(SlashBladeDefinition.REGISTRY_KEY, SceneryStaff.prefix("scenery_staff_worn"));
+            ResourceKey.create(SlashBladeDefinition.REGISTRY_KEY, SceneryIds.SCENERY_STAFF_WORN);
 
     /**
      * 新刀：启明星。
@@ -38,7 +39,7 @@ public class SceneryStaffBladeRegistry {
      * 与布景之杖系列没有剧情/合成上的关联，作为一把独立的命名刀注册。
      */
     public static final ResourceKey<SlashBladeDefinition> QIMINGXING =
-            ResourceKey.create(SlashBladeDefinition.REGISTRY_KEY, SceneryStaff.prefix("qimingxing"));
+            ResourceKey.create(SlashBladeDefinition.REGISTRY_KEY, SceneryIds.QIMINGXING);
 
     /**
      * 启明星线的下位刀：启明星。
@@ -51,7 +52,7 @@ public class SceneryStaffBladeRegistry {
      * 而上位刀沿用 {@code qimingxing} 这个 ID 不变——改名只动显示名，避免已存档的刀失效。
      */
     public static final ResourceKey<SlashBladeDefinition> QIMINGXING_WORN =
-            ResourceKey.create(SlashBladeDefinition.REGISTRY_KEY, SceneryStaff.prefix("qimingxing_worn"));
+            ResourceKey.create(SlashBladeDefinition.REGISTRY_KEY, SceneryIds.QIMINGXING_WORN);
 
     /**
      * 基础刀：潮汐。
@@ -65,14 +66,14 @@ public class SceneryStaffBladeRegistry {
      * 力量 II + 耐久 III。
      */
     public static final ResourceKey<SlashBladeDefinition> CHAOXI =
-            ResourceKey.create(SlashBladeDefinition.REGISTRY_KEY, SceneryStaff.prefix("chaoxi"));
+            ResourceKey.create(SlashBladeDefinition.REGISTRY_KEY, SceneryIds.CHAOXI);
 
     public static void registerAll(BootstrapContext<SlashBladeDefinition> bootstrap) {
         bootstrap.register(
                 SCENERY_STAFF,
                 new SlashBladeDefinition(
                         // name 与数据包 key 保持一致（决定翻译键 item.scenerystaff.scenery_staff）
-                        SceneryStaff.prefix("scenery_staff"),
+                        SceneryIds.SCENERY_STAFF,
                         RenderDefinition.Builder.newInstance()
                                 .textureName(SceneryStaff.prefix("model/scenery/scenery_staff.png"))
                                 .modelName(SceneryStaff.prefix("model/scenery/scenery.obj"))
@@ -101,7 +102,7 @@ public class SceneryStaffBladeRegistry {
                 SCENERY_STAFF_WORN,
                 new SlashBladeDefinition(
                         // name 与数据包 key 保持一致（翻译键 item.scenerystaff.scenery_staff_worn）
-                        SceneryStaff.prefix("scenery_staff_worn"),
+                        SceneryIds.SCENERY_STAFF_WORN,
                         RenderDefinition.Builder.newInstance()
                                 .textureName(SceneryStaff.prefix("model/scenery/scenery.png"))
                                 .modelName(SceneryStaff.prefix("model/scenery/scenery.obj"))
@@ -128,7 +129,7 @@ public class SceneryStaffBladeRegistry {
                 QIMINGXING,
                 new SlashBladeDefinition(
                         // name 与数据包 key 保持一致（翻译键 item.scenerystaff.qimingxing → 永远的启明星）
-                        SceneryStaff.prefix("qimingxing"),
+                        SceneryIds.QIMINGXING,
                         RenderDefinition.Builder.newInstance()
                                 .textureName(SceneryStaff.prefix("model/qimingxing/qimingxing_extra.png"))
                                 .modelName(SceneryStaff.prefix("model/qimingxing/qimingxing.obj"))
@@ -157,9 +158,9 @@ public class SceneryStaffBladeRegistry {
                 QIMINGXING_WORN,
                 new SlashBladeDefinition(
                         // 翻译键 item.scenerystaff.qimingxing_worn → 启明星
-                        SceneryStaff.prefix("qimingxing_worn"),
+                        SceneryIds.QIMINGXING_WORN,
                         RenderDefinition.Builder.newInstance()
-                                .textureName(SceneryStaff.prefix("model/qimingxing/qimingxing.png"))
+                                .textureName(SceneryStaff.prefix("model/qimingxing/qimingxing_base.png"))
                                 .modelName(SceneryStaff.prefix("model/qimingxing/qimingxing.obj"))
                                 .effectColor(0xA8C8E0)   // 比上位刀略暗的青白
                                 .build(),
@@ -183,7 +184,7 @@ public class SceneryStaffBladeRegistry {
         bootstrap.register(
                 CHAOXI,
                 new SlashBladeDefinition(
-                        SceneryStaff.prefix("chaoxi"),
+                        SceneryIds.CHAOXI,
                         RenderDefinition.Builder.newInstance()
                                 .textureName(SceneryStaff.prefix("model/chaoxi/chaoxi.png"))
                                 .modelName(SceneryStaff.prefix("model/chaoxi/chaoxi.obj"))

@@ -1,8 +1,8 @@
 package com.xingling.scenerystaff.event;
 
 import com.xingling.scenerystaff.SceneryStaff;
-import com.xingling.scenerystaff.item.SceneryBlades;
-import com.xingling.scenerystaff.item.WavebandUpgrade;
+import com.xingling.scenerystaff.blade.SceneryBlades;
+import com.xingling.scenerystaff.blade.WavebandUpgrade;
 import com.xingling.scenerystaff.registry.ItemRegistry;
 import mods.flammpfeil.slashblade.event.SlashBladeEvent;
 import net.minecraft.world.item.ItemStack;

@@ -1,7 +1,7 @@
 package com.xingling.scenerystaff.compat.ironsspells;
 
 import com.xingling.scenerystaff.SceneryStaff;
-import com.xingling.scenerystaff.item.SceneryBlades;
+import com.xingling.scenerystaff.blade.SceneryBlades;
 import io.redspace.ironsspellbooks.api.registry.AttributeRegistry;
 import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
 import io.redspace.ironsspellbooks.api.spells.AbstractSpell;

@@ -1,7 +1,7 @@
 package com.xingling.scenerystaff.event;
 
 import com.xingling.scenerystaff.SceneryStaff;
-import com.xingling.scenerystaff.item.SceneryBlades;
+import com.xingling.scenerystaff.blade.SceneryBlades;
 import net.minecraft.core.Holder;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectInstance;
@@ -35,18 +35,12 @@ public class FinalBladeBuffHandler {
         if (player.isSpectator()) {
             return;
         }
-        if (!isHoldingFinalBlade(player)) {
+        if (!SceneryBlades.isHolding(player, SceneryBlades::isFinalBlade)) {
             return;
         }
 
         keepEffect(player, MobEffects.DAMAGE_BOOST, STRENGTH_AMPLIFIER);
         keepEffect(player, MobEffects.REGENERATION, REGENERATION_AMPLIFIER);
-    }
-
-    /** 主手或副手拿着最终刀都算「持有」 */
-    private static boolean isHoldingFinalBlade(Player player) {
-        return SceneryBlades.isFinalBlade(player.getMainHandItem())
-                || SceneryBlades.isFinalBlade(player.getOffhandItem());
     }
 
     /**

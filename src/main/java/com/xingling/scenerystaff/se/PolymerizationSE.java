@@ -1,7 +1,7 @@
 package com.xingling.scenerystaff.se;
 
 import com.xingling.scenerystaff.SceneryStaff;
-import com.xingling.scenerystaff.item.SceneryBlades;
+import com.xingling.scenerystaff.blade.SceneryBlades;
 import com.xingling.scenerystaff.registry.SERegistry;
 import mods.flammpfeil.slashblade.event.SlashBladeEvent;
 import mods.flammpfeil.slashblade.registry.specialeffects.SpecialEffect;
@@ -105,16 +105,7 @@ public class PolymerizationSE extends SpecialEffect {
      * 伤害结算（{@link #explosionDamage(LivingEntity)}）会自动跟着变。
      */
     public static int maxStack(LivingEntity attacker) {
-        return isHoldingQimingxing(attacker) ? QIMINGXING_MAX_STACK : MAX_STACK;
-    }
-
-    /** 是否手持（主手或副手）「启明星」 */
-    private static boolean isHoldingQimingxing(LivingEntity attacker) {
-        if (attacker == null) {
-            return false;
-        }
-        return SceneryBlades.isQimingxing(attacker.getMainHandItem())
-                || SceneryBlades.isQimingxing(attacker.getOffhandItem());
+        return SceneryBlades.isHolding(attacker, SceneryBlades::isQimingxing) ? QIMINGXING_MAX_STACK : MAX_STACK;
     }
 
     /**
@@ -126,11 +117,11 @@ public class PolymerizationSE extends SpecialEffect {
      * 所以启明星虽然引爆得更早，伤害仍按 13 层上限结算。
      */
     public static int triggerStack(LivingEntity attacker) {
-        return isHoldingQimingxing(attacker) ? QIMINGXING_TRIGGER_STACK + 1 : MAX_STACK;
+        return SceneryBlades.isHolding(attacker, SceneryBlades::isQimingxing) ? QIMINGXING_TRIGGER_STACK + 1 : MAX_STACK;
     }
 
     /**
-     * 给目标叠一层聚合；层数<b>大于 {@link #TRIGGER_STACK}</b> 时触发一次聚爆<b>并清除层数</b>。
+     * 给目标叠一层聚合；层数<b>达到 {@link #triggerStack(LivingEntity)}</b> 时触发一次聚爆<b>并清除层数</b>。
      * <p>
      * 侵蚀领域（{@code ErosionDomainEntity}）与本特效命中共用这一份逻辑。
      * 只应在服务端调用。

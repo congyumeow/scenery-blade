@@ -1,13 +1,12 @@
 package com.xingling.scenerystaff.client;
 
 import com.xingling.scenerystaff.SceneryStaff;
-import com.xingling.scenerystaff.item.SceneryBlades;
-import com.xingling.scenerystaff.sa.SaCharge;
-import com.xingling.scenerystaff.item.WavebandUpgrade;
+import com.xingling.scenerystaff.blade.SceneryBlades;
+import com.xingling.scenerystaff.blade.WavebandUpgrade;
+import com.xingling.scenerystaff.item.ItemDescriptions;
 import mods.flammpfeil.slashblade.item.ItemSlashBlade;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.SubscribeEvent;
@@ -15,7 +14,6 @@ import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.event.entity.player.ItemTooltipEvent;
 
 import java.util.List;
-import java.util.Locale;
 
 /**
  * 为「布景之杖」系列命名刀添加物品描述（tooltip）。
@@ -28,8 +26,6 @@ import java.util.Locale;
  */
 @EventBusSubscriber(modid = SceneryStaff.MODID, value = Dist.CLIENT)
 public class BladeTooltipHandler {
-
-    private static final int MAX_DESC_LINES = 8;
 
     @SubscribeEvent
     public static void onItemTooltip(ItemTooltipEvent event) {
@@ -51,23 +47,17 @@ public class BladeTooltipHandler {
         // 所以不能按固定行号插入；这里记下「描述开始之前」的下标，末尾再按它插回去。
         int baseCritIndex = tooltip.size();
 
-        for (int i = 1; i <= MAX_DESC_LINES; i++) {
-            String key = prefix + i;
-            MutableComponent line = Component.translatable(key);
-            // 语言文件中不存在该键时原样返回键名 —— 视为描述结束
-            if (line.getString().equals(key)) {
-                break;
-            }
-            tooltip.add(line.withStyle(ChatFormatting.LIGHT_PURPLE));
-        }
+        // 描述行交给 ItemDescriptions：那里的「读到不存在的键即停止」是同一条规则，
+        // 本类原先自己又写了一遍同样的循环，属于两个真相源。
+        ItemDescriptions.append(tooltip, prefix);
 
         appendWavebandUpgrade(tooltip, stack);
 
         // 基础暴击（未强化时的底值）：只给两把终盘刀显示
         if (SceneryBlades.hasCrit(stack)) {
+            WavebandUpgrade.CritStats base = WavebandUpgrade.critForLevel(0);
             tooltip.add(baseCritIndex, Component.translatable("tooltip.scenerystaff.crit_base",
-                    Math.round(WavebandUpgrade.CRIT_CHANCE_BASE * 100.0D) + "%",
-                    Math.round(WavebandUpgrade.CRIT_DAMAGE_BASE * 100.0D) + "%")
+                    base.chancePercent() + "%", base.damagePercent() + "%")
                     .withStyle(ChatFormatting.GRAY));
         }
     }
@@ -89,14 +79,15 @@ public class BladeTooltipHandler {
         tooltip.add(Component.translatable("tooltip.scenerystaff.waveband_attack", percent + "%")
                 .withStyle(ChatFormatting.GRAY));
 
-        // 强化带来的<b>增量</b>（相对未强化基线 20%/150%），不是最终值——最终值见属性块里的基础暴击
+        // 强化带来的<b>增量</b>（相对未强化基线），不是最终值——最终值见属性块里的基础暴击。
+        // 基线同样取自 critForLevel(0)，与判定侧同一个来源。
         if (SceneryBlades.hasCrit(stack)) {
-            int chanceGain = (int) Math.round(
-                    (WavebandUpgrade.critChanceOf(stack) - WavebandUpgrade.CRIT_CHANCE_BASE) * 100.0D);
-            int damageGain = (int) Math.round(
-                    (WavebandUpgrade.critDamageOf(stack) - WavebandUpgrade.CRIT_DAMAGE_BASE) * 100.0D);
+            WavebandUpgrade.CritStats crit = WavebandUpgrade.critOf(stack);
+            WavebandUpgrade.CritStats base = WavebandUpgrade.critForLevel(0);
             tooltip.add(Component.translatable("tooltip.scenerystaff.waveband_crit",
-                    "+" + chanceGain + "%", "+" + damageGain + "%").withStyle(ChatFormatting.GRAY));
+                    "+" + (crit.chancePercent() - base.chancePercent()) + "%",
+                    "+" + (crit.damagePercent() - base.damagePercent()) + "%")
+                    .withStyle(ChatFormatting.GRAY));
         }
     }
 }

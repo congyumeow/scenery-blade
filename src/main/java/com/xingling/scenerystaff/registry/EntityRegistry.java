@@ -1,6 +1,7 @@
 package com.xingling.scenerystaff.registry;
 
 import com.xingling.scenerystaff.SceneryStaff;
+import com.xingling.scenerystaff.blade.SceneryIds;
 import com.xingling.scenerystaff.entity.ErosionDomainEntity;
 import com.xingling.scenerystaff.entity.GiantSwordEntity;
 import net.minecraft.core.registries.Registries;
@@ -14,10 +15,10 @@ public class EntityRegistry {
             DeferredRegister.create(Registries.ENTITY_TYPE, SceneryStaff.MODID);
 
     public static final DeferredHolder<EntityType<?>, EntityType<ErosionDomainEntity>> EROSION_DOMAIN =
-            REGISTRY.register("erosion_domain",
+            REGISTRY.register(SceneryIds.EROSION_DOMAIN_PATH,
                     () -> EntityType.Builder.<ErosionDomainEntity>of(ErosionDomainEntity::new, MobCategory.MISC)
                             .sized(3.0F, 0.5F) // 范围大小，实际检测用半径
-                            .build(SceneryStaff.prefix("erosion_domain").toString()));
+                            .build(SceneryIds.EROSION_DOMAIN.toString()));
 
     /**
      * 「巨剑」剑技召唤的巨剑实体。
@@ -26,10 +27,10 @@ public class EntityRegistry {
      * 碰撞由实体自身的 {@code noPhysics} 关闭，这里的 sized 只是视觉尺寸。
      */
     public static final DeferredHolder<EntityType<?>, EntityType<GiantSwordEntity>> GIANT_SWORD =
-            REGISTRY.register("giant_sword",
+            REGISTRY.register(SceneryIds.GIANT_SWORD_PATH,
                     () -> EntityType.Builder.<GiantSwordEntity>of(GiantSwordEntity::new, MobCategory.MISC)
-                            .sized(4.0F, 8.0F)
+                            .sized(4.0F, GiantSwordEntity.SWORD_LENGTH)
                             .clientTrackingRange(8)
                             .updateInterval(1)
-                            .build(SceneryStaff.prefix("giant_sword").toString()));
+                            .build(SceneryIds.GIANT_SWORD.toString()));
 }

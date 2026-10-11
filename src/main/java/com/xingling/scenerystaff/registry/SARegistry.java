@@ -1,6 +1,7 @@
 package com.xingling.scenerystaff.registry;
 
 import com.xingling.scenerystaff.SceneryStaff;
+import com.xingling.scenerystaff.blade.SceneryIds;
 import com.xingling.scenerystaff.sa.ErosionDomainSA;
 import com.xingling.scenerystaff.sa.GiantSwordSA;
 import mods.flammpfeil.slashblade.slasharts.SlashArts;
@@ -16,12 +17,12 @@ public class SARegistry {
      * 由该状态的 TimeLineTickAction 生成领域实体（见 ErosionDomainSA）。
      */
     public static final DeferredHolder<SlashArts, SlashArts> EROSION_DOMAIN =
-            REGISTRY.register("erosion_domain", ErosionDomainSA::new);
+            REGISTRY.register(SceneryIds.EROSION_DOMAIN_PATH, ErosionDomainSA::new);
 
     /**
      * 巨剑：启明星专属剑技。同样映射到一个连击状态（{@code scenerystaff:giant_sword}），
      * 由该状态的时间轴回调召唤巨剑并播放 Aemeath 语音（见 GiantSwordSA）。
      */
     public static final DeferredHolder<SlashArts, SlashArts> GIANT_SWORD =
-            REGISTRY.register("giant_sword", GiantSwordSA::new);
+            REGISTRY.register(SceneryIds.GIANT_SWORD_PATH, GiantSwordSA::new);
 }

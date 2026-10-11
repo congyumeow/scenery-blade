@@ -1,4 +1,4 @@
-package com.xingling.scenerystaff.client.render;
+package com.xingling.scenerystaff.client.renderer;
 
 import org.joml.Matrix3f;
 import org.joml.Quaternionf;
