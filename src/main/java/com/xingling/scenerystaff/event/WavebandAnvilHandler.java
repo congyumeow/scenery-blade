@@ -11,10 +11,13 @@ import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.event.AnvilUpdateEvent;
 
 /**
- * 「达妮娅的回音频段」通过铁砧强化本模组拔刀剑。
+ * 回音频段通过铁砧强化本模组的刀。
+ * <p>
+ * 两条强化线各管一把刀：达妮娅的回音频段 → 布景之杖系列；爱弥斯的回音频段 → 启明星。
+ * 哪条配哪把由 {@link WavebandUpgrade#matches} 判定。
  * <p>
  * 机制完全照搬拔刀剑自身「耀魂铁锭」那一套（{@code RefineHandler}）：监听 {@link AnvilUpdateEvent}，
- * 铁砧左槽放本模组的刀、右槽放回音频段即可出现结果。
+ * 铁砧左槽放刀、右槽放对应的回音频段即可出现结果。
  * <ul>
  *   <li>事件在 {@code AnvilMenu#createResult()} 中、原版逻辑之前触发；只要 {@code output} 非空，
  *       原版逻辑就会被跳过。本处理器使用默认优先级（NORMAL），先于拔刀剑 {@code RefineHandler}
@@ -40,11 +43,9 @@ public class WavebandAnvilHandler {
         if (left.isEmpty() || right.isEmpty()) {
             return;
         }
-        // 右槽必须是回音频段，左槽必须是本模组的刀
-        if (!right.is(ItemRegistry.DENIA_WAVEBAND.get())) {
-            return;
-        }
-        if (!SceneryBlades.isSceneryBlade(left)) {
+        // 左槽必须是被强化的刀，右槽必须是与之匹配的那条回音频段
+        // （达妮娅的 → 布景之杖系列；爱弥斯的 → 启明星）
+        if (!SceneryBlades.isWavebandUpgradable(left) || !WavebandUpgrade.matches(right, left)) {
             return;
         }
 
@@ -71,7 +72,7 @@ public class WavebandAnvilHandler {
     @SubscribeEvent
     public static void onUpdateAttack(SlashBladeEvent.UpdateAttackEvent event) {
         ItemStack blade = event.getBlade();
-        if (!SceneryBlades.isSceneryBlade(blade)) {
+        if (!SceneryBlades.isWavebandUpgradable(blade)) {
             return;
         }
         double bonus = WavebandUpgrade.attackBonus(blade, event.getSlashBladeState());

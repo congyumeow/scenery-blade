@@ -34,9 +34,13 @@ public class PolymerizationClientProvider implements IEntityComponentProvider {
         if (count <= 0) {
             return; // 已经衰减光了
         }
+        // 上限由服务端随层数一起发来（持有启明星时为 13）；旧数据没带就退回默认上限
+        int cap = data.contains(PolymerizationSE.TAG_CAP)
+                ? data.getInt(PolymerizationSE.TAG_CAP)
+                : PolymerizationSE.MAX_STACK;
 
         tooltip.add(Component.translatable("jade.scenerystaff.polymerization",
-                count, PolymerizationSE.MAX_STACK).withStyle(ChatFormatting.GOLD));
+                count, cap).withStyle(ChatFormatting.GOLD));
 
         tooltip.add(Component.translatable("jade.scenerystaff.polymerization_decay",
                         String.format(Locale.ROOT, "%.1f", PolymerizationSE.ticksUntilDecay(elapsed) / 20.0F))

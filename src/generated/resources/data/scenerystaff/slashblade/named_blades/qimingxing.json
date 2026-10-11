@@ -1,0 +1,39 @@
+{
+  "creativeGroup": "scenerystaff:scenerystaff_tab",
+  "enchantments": [
+    {
+      "id": "minecraft:sharpness",
+      "lvl": 5
+    },
+    {
+      "id": "minecraft:unbreaking",
+      "lvl": 3
+    },
+    {
+      "id": "minecraft:power",
+      "lvl": 5
+    },
+    {
+      "id": "minecraft:smite",
+      "lvl": 5
+    }
+  ],
+  "name": "scenerystaff:qimingxing",
+  "properties": {
+    "attack_base": 15.0,
+    "max_damage": 350,
+    "slash_art": "scenerystaff:giant_sword",
+    "special_effects": [
+      "scenerystaff:polymerization"
+    ],
+    "sword_type": [
+      "bewitched"
+    ]
+  },
+  "render": {
+    "carry_type": "default",
+    "model": "scenerystaff:model/qimingxing/qimingxing.obj",
+    "summon_sword_color": 13166847,
+    "texture": "scenerystaff:model/qimingxing/qimingxing_extra.png"
+  }
+}

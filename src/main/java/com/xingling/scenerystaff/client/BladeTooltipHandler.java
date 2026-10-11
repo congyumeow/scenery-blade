@@ -2,6 +2,7 @@ package com.xingling.scenerystaff.client;
 
 import com.xingling.scenerystaff.SceneryStaff;
 import com.xingling.scenerystaff.item.SceneryBlades;
+import com.xingling.scenerystaff.sa.SaCharge;
 import com.xingling.scenerystaff.item.WavebandUpgrade;
 import mods.flammpfeil.slashblade.item.ItemSlashBlade;
 import net.minecraft.ChatFormatting;
@@ -44,6 +45,12 @@ public class BladeTooltipHandler {
 
         String prefix = translationKey + ".desc.";
         List<Component> tooltip = event.getToolTip();
+
+        // 基础暴击要显示在「在主手时」属性块里、描述之前。
+        // 属性块由原版与各模组（如铁魔法的法术强度）分别追加，行数不固定，
+        // 所以不能按固定行号插入；这里记下「描述开始之前」的下标，末尾再按它插回去。
+        int baseCritIndex = tooltip.size();
+
         for (int i = 1; i <= MAX_DESC_LINES; i++) {
             String key = prefix + i;
             MutableComponent line = Component.translatable(key);
@@ -55,12 +62,20 @@ public class BladeTooltipHandler {
         }
 
         appendWavebandUpgrade(tooltip, stack);
+
+        // 基础暴击（未强化时的底值）：只给两把终盘刀显示
+        if (SceneryBlades.hasCrit(stack)) {
+            tooltip.add(baseCritIndex, Component.translatable("tooltip.scenerystaff.crit_base",
+                    Math.round(WavebandUpgrade.CRIT_CHANCE_BASE * 100.0D) + "%",
+                    Math.round(WavebandUpgrade.CRIT_DAMAGE_BASE * 100.0D) + "%")
+                    .withStyle(ChatFormatting.GRAY));
+        }
     }
 
     /**
-     * 追加「达妮娅的回音频段」的强化信息（强化等级、攻击力加成、最终刀的领域冷却缩减）。
+     * 追加回音频段的强化信息（强化等级、攻击力加成、暴击率 / 暴击伤害）。
      * <p>
-     * 数值全部来自 {@link WavebandUpgrade}，与铁砧强化和攻击力事件共用同一份常量，改一处即可。
+     * 数值全部来自 {@link WavebandUpgrade}，与铁砧强化、攻击力事件、暴击事件共用同一份常量，改一处即可。
      */
     private static void appendWavebandUpgrade(List<Component> tooltip, ItemStack stack) {
         int level = WavebandUpgrade.getLevel(stack);
@@ -74,10 +89,14 @@ public class BladeTooltipHandler {
         tooltip.add(Component.translatable("tooltip.scenerystaff.waveband_attack", percent + "%")
                 .withStyle(ChatFormatting.GRAY));
 
-        if (SceneryBlades.isFinalBlade(stack)) {
-            float seconds = level * WavebandUpgrade.DOMAIN_COOLDOWN_REDUCTION_TICKS / 20.0F;
-            tooltip.add(Component.translatable("tooltip.scenerystaff.waveband_domain_cd",
-                    String.format(Locale.ROOT, "%.1f", seconds)).withStyle(ChatFormatting.GRAY));
+        // 强化带来的<b>增量</b>（相对未强化基线 20%/150%），不是最终值——最终值见属性块里的基础暴击
+        if (SceneryBlades.hasCrit(stack)) {
+            int chanceGain = (int) Math.round(
+                    (WavebandUpgrade.critChanceOf(stack) - WavebandUpgrade.CRIT_CHANCE_BASE) * 100.0D);
+            int damageGain = (int) Math.round(
+                    (WavebandUpgrade.critDamageOf(stack) - WavebandUpgrade.CRIT_DAMAGE_BASE) * 100.0D);
+            tooltip.add(Component.translatable("tooltip.scenerystaff.waveband_crit",
+                    "+" + chanceGain + "%", "+" + damageGain + "%").withStyle(ChatFormatting.GRAY));
         }
     }
 }

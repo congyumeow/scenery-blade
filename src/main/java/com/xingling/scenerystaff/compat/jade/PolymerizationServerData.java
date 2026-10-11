@@ -37,7 +37,10 @@ public class PolymerizationServerData implements IServerDataProvider<EntityAcces
         if (PolymerizationSE.getEffectiveCount(living) <= 0) {
             return;
         }
-        data.putInt(PolymerizationSE.TAG_COUNT, Math.min(raw, PolymerizationSE.MAX_STACK));
+        // 原样发送：上限是在叠层时按 maxStack 施加的，这里不截断（否则日后提高上限会被显示端吃掉）
+        data.putInt(PolymerizationSE.TAG_COUNT, raw);
+        // 一并把当时的层数上限发给客户端——持有启明星时上限是 13，显示端要按它做分母
+        data.putInt(PolymerizationSE.TAG_CAP, persistent.getInt(PolymerizationSE.TAG_CAP));
         data.putLong(PolymerizationSE.TAG_LAST, persistent.getLong(PolymerizationSE.TAG_LAST));
     }
 

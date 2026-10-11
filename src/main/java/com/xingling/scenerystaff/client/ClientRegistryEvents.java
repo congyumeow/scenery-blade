@@ -2,6 +2,7 @@ package com.xingling.scenerystaff.client;
 
 import com.xingling.scenerystaff.SceneryStaff;
 import com.xingling.scenerystaff.client.renderer.entity.ErosionDomainRenderer;
+import com.xingling.scenerystaff.client.renderer.entity.GiantSwordRenderer;
 import com.xingling.scenerystaff.registry.EntityRegistry;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.SubscribeEvent;
@@ -19,5 +20,6 @@ public class ClientRegistryEvents {
     @SubscribeEvent
     public static void onRegisterRenderers(final EntityRenderersEvent.RegisterRenderers event) {
         event.registerEntityRenderer(EntityRegistry.EROSION_DOMAIN.get(), ErosionDomainRenderer::new);
+        event.registerEntityRenderer(EntityRegistry.GIANT_SWORD.get(), GiantSwordRenderer::new);
     }
 }

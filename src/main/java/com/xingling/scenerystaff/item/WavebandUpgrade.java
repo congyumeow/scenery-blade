@@ -1,21 +1,28 @@
 package com.xingling.scenerystaff.item;
 
 import com.xingling.scenerystaff.registry.DataComponentRegistry;
+import com.xingling.scenerystaff.registry.ItemRegistry;
 import mods.flammpfeil.slashblade.capability.slashblade.ISlashBladeState;
 import net.minecraft.util.Mth;
 import net.minecraft.world.item.ItemStack;
 
 /**
- * 「达妮娅的回音频段」对刀进行铁砧强化时的全部数值与判定，集中在这里方便调参。
- *
+ * 回音频段对刀进行铁砧强化时的全部数值与判定，集中在这里方便调参。
+ * <p>
+ * <b>两条强化线各管一把刀</b>：
+ * <ul>
+ *   <li>达妮娅的回音频段 → 布景之杖系列（最终刀 / 下位刀）；</li>
+ *   <li>爱弥斯的回音频段 → 启明星。</li>
+ * </ul>
+ * 两者的强化方式与数值完全一致：
  * <ul>
  *   <li>每次强化：消耗 1 个回音频段 + {@link #ANVIL_LEVEL_COST} 级经验；</li>
- *   <li>攻击力：每次 +15% <b>基础攻击力</b>（即刀的 {@code baseAttackModifier}），线性叠加；</li>
- *   <li>最终刀额外：每次「侵蚀领域」冷却 -0.8 秒；</li>
- *   <li>上限 {@link #MAX_LEVEL} 次（最终刀满级 35s - 4.8s = 30.2s）。</li>
+ *   <li>攻击力：每次 +{@link #ATTACK_BONUS_PER_LEVEL} 的<b>基础攻击力</b>，线性叠加；</li>
+ *   <li>暴击：未强化 {@link #CRIT_CHANCE_BASE} / {@link #CRIT_DAMAGE_BASE}，
+ *       满级（{@link #MAX_LEVEL} 次）{@link #CRIT_CHANCE_MAX} / {@link #CRIT_DAMAGE_MAX}，线性增长。</li>
  * </ul>
- *
- * 哪些刀算「本模组的刀」由 {@link SceneryBlades} 负责判定，这里只关心数值。
+ * 「哪些刀能被强化」由 {@link SceneryBlades#isWavebandUpgradable} 判定，
+ * 「哪条配哪把」由 {@link #matches} 判定，这里只关心数值。
  */
 public final class WavebandUpgrade {
 
@@ -25,13 +32,33 @@ public final class WavebandUpgrade {
     /** 每次强化增加的基础攻击力比例 */
     public static final float ATTACK_BONUS_PER_LEVEL = 0.15F;
 
-    /** 每次强化为最终刀减少的领域冷却（tick）：0.8 秒 */
-    public static final int DOMAIN_COOLDOWN_REDUCTION_TICKS = 16;
-
     /** 每次强化需要的经验等级 */
     public static final long ANVIL_LEVEL_COST = 5L;
 
+    /** 未强化时的暴击率与暴击伤害倍率（1.50 = 150%） */
+    public static final double CRIT_CHANCE_BASE = 0.20D;
+    public static final double CRIT_DAMAGE_BASE = 1.50D;
+
+    /** 满级时的暴击率与暴击伤害倍率 */
+    public static final double CRIT_CHANCE_MAX = 0.80D;
+    public static final double CRIT_DAMAGE_MAX = 2.80D;
+
     private WavebandUpgrade() {
+    }
+
+    /**
+     * 这条回音频段能不能强化这把刀。
+     * <p>
+     * 达妮娅的 → 布景之杖系列；爱弥斯的 → 启明星。
+     */
+    public static boolean matches(ItemStack waveband, ItemStack blade) {
+        if (waveband.is(ItemRegistry.DENIA_WAVEBAND.get())) {
+            return SceneryBlades.isSceneryBlade(blade);
+        }
+        if (waveband.is(ItemRegistry.AEMEATH_WAVEBAND.get())) {
+            return SceneryBlades.isQimingxingBlade(blade);
+        }
+        return false;
     }
 
     /** 读取一把刀上已有的强化次数（无组件 / 非本模组的刀一律为 0） */
@@ -58,22 +85,31 @@ public final class WavebandUpgrade {
         return attackBonusFor(getLevel(stack), state.getBaseAttackModifier());
     }
 
-    /** 按强化等级缩短后的领域冷却；非最终刀保持原值 */
-    public static int domainCooldownTicks(ItemStack stack, int baseTicks) {
-        if (!SceneryBlades.isFinalBlade(stack)) {
-            return baseTicks;
-        }
-        return domainCooldownTicksFor(getLevel(stack), baseTicks);
-    }
-
     /** 纯数值部分：等级 → 攻击力加成，便于离线核对（不依赖物品栈） */
     public static double attackBonusFor(int level, float baseAttack) {
         int clamped = Mth.clamp(level, 0, MAX_LEVEL);
         return clamped <= 0 ? 0.0D : baseAttack * ATTACK_BONUS_PER_LEVEL * clamped;
     }
 
-    /** 纯数值部分：等级 → 缩短后的领域冷却，便于离线核对（不依赖物品栈） */
-    public static int domainCooldownTicksFor(int level, int baseTicks) {
-        return Math.max(0, baseTicks - Mth.clamp(level, 0, MAX_LEVEL) * DOMAIN_COOLDOWN_REDUCTION_TICKS);
+    /** 纯数值部分：等级 → 暴击率（0.20 线性升到 0.80） */
+    public static double critChanceFor(int level) {
+        int clamped = Mth.clamp(level, 0, MAX_LEVEL);
+        return CRIT_CHANCE_BASE + (CRIT_CHANCE_MAX - CRIT_CHANCE_BASE) * clamped / MAX_LEVEL;
+    }
+
+    /** 纯数值部分：等级 → 暴击伤害倍率（1.50 线性升到 2.80） */
+    public static double critDamageFor(int level) {
+        int clamped = Mth.clamp(level, 0, MAX_LEVEL);
+        return CRIT_DAMAGE_BASE + (CRIT_DAMAGE_MAX - CRIT_DAMAGE_BASE) * clamped / MAX_LEVEL;
+    }
+
+    /** 刀当前的暴击率 */
+    public static double critChanceOf(ItemStack stack) {
+        return critChanceFor(getLevel(stack));
+    }
+
+    /** 刀当前的暴击伤害倍率 */
+    public static double critDamageOf(ItemStack stack) {
+        return critDamageFor(getLevel(stack));
     }
 }

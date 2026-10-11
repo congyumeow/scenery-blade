@@ -31,6 +31,8 @@ public class ItemTabRegistry {
                         output.accept(ItemRegistry.XUZHI.get());
                         output.accept(ItemRegistry.DENIA_WAVEBAND.get());
                         output.accept(ItemRegistry.DENIA_BIRTHDAY_CAKE.get());
+                        output.accept(ItemRegistry.HUSHENFU.get());
+                        output.accept(ItemRegistry.AEMEATH_WAVEBAND.get());
                     })
                     .build());
 }

@@ -132,12 +132,17 @@ public class ErosionDomainEntity extends Entity {
                             || (e instanceof Mob mob && mob.getTarget() == owner))
                         && e.distanceToSqr(this) <= RADIUS * RADIUS);
 
-        DamageSource damageSource = owner.damageSources().magic();
+        // 归属到领域主人：用原版「间接魔法」伤害（与唤魔者尖牙同一写法），
+        // 来源实体是领域本身、归属实体是玩家——击杀因此记在玩家头上，
+        // 成就/统计/掉落都能正常触发，死亡信息也会正确写出归属。
+        // 它与 magic 一样属于 #minecraft:bypasses_armor，仍然无视护甲。
+        // 这份伤害来源同时用于聚爆叠层，所以聚爆的那次伤害也一并归属玩家。
+        DamageSource damageSource = owner.damageSources().indirectMagic(this, owner);
         for (LivingEntity target : targets) {
             // 造成伤害
             target.hurt(damageSource, DAMAGE_AMOUNT);
             // 附加聚爆层数（每次伤害 +1 层，与 SE 共享同一计数；叠满由 addStack 触发额外伤害与音效）
-            PolymerizationSE.addStack(target, damageSource);
+            PolymerizationSE.addStack(target, damageSource, owner);
         }
     }
 

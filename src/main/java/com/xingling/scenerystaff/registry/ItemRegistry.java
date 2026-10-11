@@ -6,6 +6,7 @@ import com.xingling.scenerystaff.item.DescribedItem;
 import com.xingling.scenerystaff.item.XuzhiItem;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.item.Rarity;
 import net.neoforged.neoforge.registries.DeferredHolder;
 import net.neoforged.neoforge.registries.DeferredRegister;
 
@@ -36,4 +37,27 @@ public class ItemRegistry {
                     BlockRegistry.DENIA_BIRTHDAY_CAKE.get(),
                     new Item.Properties().stacksTo(64),
                     "item.scenerystaff.denia_birthday_cake.desc."));
+
+    /**
+     * 爱弥斯的护身符：纪念/任务道具。
+     * <p>
+     * 参考鸣潮 3.3 主线「潮汐任务·远航星」中的同名道具：一枚罗伊族的护身符，
+     * 曾被带着它的孩子珍重地握着，如今漂流到持有者手中。
+     * 描述键前缀 {@code item.scenerystaff.hushenfu.desc.}，不可堆叠、史诗品质（对应 5 星）。
+     */
+    public static final DeferredHolder<Item, Item> HUSHENFU =
+            REGISTRY.register("hushenfu", () -> new DescribedItem(
+                    new Item.Properties().stacksTo(1).rarity(Rarity.EPIC),
+                    "item.scenerystaff.hushenfu.desc."));
+
+    /**
+     * 爱弥斯的回音频段：与「达妮娅的回音频段」对应的强化材料，用于强化启明星。
+     * <p>
+     * 两条强化线各管一把刀：达妮娅的回音频段 → 布景之杖系列；爱弥斯的回音频段 → 启明星。
+     * 强化方式与数值完全一致（铁砧、上限 6 级、攻击力加成、暴击率/暴击伤害线性提升）。
+     * 描述键前缀 {@code item.scenerystaff.aemeath_waveband.desc.}，堆叠上限 16。
+     */
+    public static final DeferredHolder<Item, Item> AEMEATH_WAVEBAND =
+            REGISTRY.register("aemeath_waveband", () -> new DescribedItem(
+                    new Item.Properties().stacksTo(16), "item.scenerystaff.aemeath_waveband.desc."));
 }

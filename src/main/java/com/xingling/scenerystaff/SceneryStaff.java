@@ -1,8 +1,11 @@
 package com.xingling.scenerystaff;
 
+import com.xingling.scenerystaff.compat.ironsspells.IronsSpellsCompat;
 import com.xingling.scenerystaff.registry.*;
+import com.xingling.scenerystaff.sa.SaCharge;
 import net.minecraft.resources.ResourceLocation;
 import net.neoforged.bus.api.IEventBus;
+import net.neoforged.fml.ModList;
 import org.slf4j.Logger;
 
 import com.mojang.logging.LogUtils;
@@ -31,5 +34,13 @@ public class SceneryStaff {
         ComboStateRegistry.COMBO_STATE.register(modEventBus);
         EntityRegistry.REGISTRY.register(modEventBus);
         DataComponentRegistry.REGISTRY.register(modEventBus);
+        // SA 充能值（玩家附件：持久化 + 自动同步到客户端）
+        SaCharge.REGISTRY.register(modEventBus);
+
+        // 铁魔法是可选联动。必须用 isLoaded 守卫把调用包起来：
+        // NoClassDefFoundError；放在守卫里，这个类才只会在铁魔法确实存在时加载。
+        if (ModList.get().isLoaded("irons_spellbooks")) {
+            IronsSpellsCompat.register();
+        }
     }
 }

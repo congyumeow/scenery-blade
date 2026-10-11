@@ -14,5 +14,6 @@ public class SceneryStaffSoundGenerator extends SceneryStaffSoundProvider {
         generateNewSound(SoundRegistry.DENIA1, "denia1");
         generateNewSound(SoundRegistry.DENIA2, "denia2");
         generateNewSound(SoundRegistry.DENIA3, "denia3");
+        generateNewSound(SoundRegistry.AEMEATH, "aemeath");
     }
 }

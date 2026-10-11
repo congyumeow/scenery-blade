@@ -15,17 +15,18 @@
     "D": {
       "type": "slashblade:blade",
       "items": [
-        "slashblade:slashblade_white"
+        "slashblade:slashblade"
       ],
       "request": {
-        "kill": 50
+        "kill": 100,
+        "name": "scenerystaff:chaoxi"
       }
     }
   },
   "pattern": [
     " A ",
     "BDB",
-    "CBC"
+    "C C"
   ],
   "result": {
     "count": 1,

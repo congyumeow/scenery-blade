@@ -126,6 +126,10 @@ dependencies {
     // Jade 是可选依赖：只用 compileOnly，既不会打进本模组的 jar，也不会成为运行时依赖。
     // 插件类由 Jade 自己扫描加载，未安装 Jade 时本模组照常加载（该类不会被任何代码引用）。
     compileOnly "maven.modrinth:jade:eYz2YBGT"
+
+    // 铁魔法（Iron's Spells 'n Spellbooks）同样是可选联动：compileOnly，不打进 jar、不成为运行时依赖。
+    // 它的 API 只被 compat/ironsspells/ 引用，并由 ModList.isLoaded 守卫保护，未安装时不会被加载。
+    compileOnly("curse.maven:irons-spells-n-spellbooks-855414:6834357") { transitive = false }
 }
 
 tasks.named('processResources', ProcessResources).configure {

@@ -2,6 +2,7 @@ package com.xingling.scenerystaff.registry;
 
 import com.xingling.scenerystaff.SceneryStaff;
 import com.xingling.scenerystaff.sa.ErosionDomainSA;
+import com.xingling.scenerystaff.sa.GiantSwordSA;
 import mods.flammpfeil.slashblade.init.DefaultResources;
 import mods.flammpfeil.slashblade.registry.combo.ComboState;
 import net.neoforged.neoforge.registries.DeferredHolder;
@@ -25,6 +26,19 @@ public class ComboStateRegistry {
                     .nextOfTimeout(entity -> mods.flammpfeil.slashblade.registry.ComboStateRegistry.NONE.getId())
                     .addTickAction(ComboState.TimeLineTickAction.getBuilder()
                             .put(0, ErosionDomainSA::doErosionDomain)
+                            .build())
+                    .build());
+
+    /** 巨剑（启明星）：第 0 帧播放 Aemeath 语音并召唤巨剑，同样回归 slashblade:none */
+    public static final DeferredHolder<ComboState, ComboState> GIANT_SWORD = COMBO_STATE.register("giant_sword",
+            () -> ComboState.Builder.newInstance()
+                    .startAndEnd(0, 15)
+                    .priority(50)
+                    .motionLoc(DefaultResources.ExMotionLocation)
+                    .next(entity -> mods.flammpfeil.slashblade.registry.ComboStateRegistry.NONE.getId())
+                    .nextOfTimeout(entity -> mods.flammpfeil.slashblade.registry.ComboStateRegistry.NONE.getId())
+                    .addTickAction(ComboState.TimeLineTickAction.getBuilder()
+                            .put(0, GiantSwordSA::doGiantSword)
                             .build())
                     .build());
 }

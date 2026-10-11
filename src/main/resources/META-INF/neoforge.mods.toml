@@ -32,3 +32,12 @@ type="required"
 versionRange="[2.0.2,)"
 ordering="AFTER"
 side="BOTH"
+
+# 可选联动：铁魔法。下限 3.9.1 = 最早的 1.21.1 构建，故实际等于「任何 1.21.1 版铁魔法」。
+# 必须带 1.21.1- 前缀；只写 [3.9,) 会因 Maven 版本比较规则而一个都匹配不上。
+[[dependencies.${mod_id}]]
+modId="irons_spellbooks"
+type="optional"
+versionRange="[1.21.1-3.9,)"
+ordering="AFTER"
+side="BOTH"

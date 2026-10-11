@@ -1,15 +1,15 @@
 package com.xingling.scenerystaff.se;
 
 import com.xingling.scenerystaff.SceneryStaff;
+import com.xingling.scenerystaff.item.SceneryBlades;
 import com.xingling.scenerystaff.registry.SERegistry;
-import mods.flammpfeil.slashblade.capability.slashblade.ISlashBladeState;
 import mods.flammpfeil.slashblade.event.SlashBladeEvent;
 import mods.flammpfeil.slashblade.registry.specialeffects.SpecialEffect;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.damagesource.DamageTypes;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.player.Player;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 
@@ -19,7 +19,22 @@ import net.neoforged.fml.common.EventBusSubscriber;
  * 参照 SlashBlade Resharped 内置特效 WitherEdge 的实现方式：
  * 特效类本身仅负责注册与描述，行为通过 {@link EventBusSubscriber} 监听
  * {@link SlashBladeEvent.HitEvent} 实现，命中时检查刀上是否带有本特效。
- * 命中目标叠层，叠满 {@link #MAX_STACK} 层触发一次额外伤害（<b>不播语音</b>）。
+ * <p>
+ * <b>引爆条件</b>：层数达到 {@link #triggerStack(LivingEntity)} 即引爆，<b>并清除层数</b>，
+ * 下一轮重新从 1 层叠起。默认是叠满 {@link #MAX_STACK}（10）层；手持「启明星」时提前到第
+ * {@link #QIMINGXING_TRIGGER_STACK} + 1 层（也就是层数大于 5）。
+ * <p>
+ * <b>伤害结算</b>：聚爆伤害<b>与施术者的最大生命值和当前护甲值相关</b>，
+ * 且结算层数取的是<b>层数上限</b>而不是引爆时的实际层数——所以提前引爆不会削弱伤害
+ * （见 {@link #explosionDamage(LivingEntity)}）。倍率以 {@link #ANCHOR_STACK} 层为 1.0，
+ * 每多 {@link #DOUBLING_LAYERS} 层翻一倍，于是上限提到 13 时伤害正好是 10 层的 <b>2 倍</b>。
+ * <p>
+ * <b>层数上限</b>统一经 {@link #maxStack(LivingEntity)} 取值：默认 {@link #MAX_STACK}，
+ * 手持「启明星」时提高到 {@link #QIMINGXING_MAX_STACK}。后续若还要加入别的提高上限途径，
+ * 改那一个方法即可。
+ * <p>
+ * <b>无视护甲</b>：聚爆走原版 {@code minecraft:magic} 伤害类型（{@code #minecraft:bypasses_armor} 的成员），
+ * 公式算出的数值不会再被目标护甲削减；抗性提升、保护附魔等其它常规减伤仍然照常生效。
  * <p>
  * 层数记在目标实体的持久化数据上，并附带最后一次叠层的时间戳：<b>超过 {@link #DECAY_TICKS}
  * 没有再叠层，当前层数减少 1 层</b>（每过一个 {@link #DECAY_TICKS} 再减 1，直到清零）。
@@ -32,10 +47,25 @@ public class PolymerizationSE extends SpecialEffect {
     public static final String TAG_COUNT = "polymerization_count";
     /** 最后一次叠层的游戏刻（用于衰减结算与 Jade 显示剩余时间） */
     public static final String TAG_LAST = "polymerization_last_tick";
-    /** 每满 {@link #MAX_STACK} 层触发的额外伤害 */
-    public static final float EXPLOSION_DAMAGE = 5.0F;
-    /** 触发聚爆所需的层数 */
+    /** 最近一次叠层时生效的层数上限，供 Jade 显示做分母 */
+    public static final String TAG_CAP = "polymerization_cap";
+
+    /** 默认的层数上限（用于伤害结算） */
     public static final int MAX_STACK = 10;
+    /** 手持「启明星」时的层数上限 */
+    public static final int QIMINGXING_MAX_STACK = 13;
+    /** 手持「启明星」时：层数<b>大于</b>该值（也就是叠到第 6 层）即引爆 */
+    public static final int QIMINGXING_TRIGGER_STACK = 5;
+    /** 伤害锚点：结算层数等于该值时，聚爆伤害就是基础伤害本身 */
+    public static final int ANCHOR_STACK = 10;
+    /** 结算层数每比锚点多该值层数，伤害翻一倍（于是结算层数 13 正好是 10 的 2 倍） */
+    public static final float DOUBLING_LAYERS = 3.0F;
+    /** 基础聚爆伤害 = 施术者最大生命值 × 该系数 + 施术者护甲值 × {@link #ARMOR_FACTOR} */
+    public static final float HEALTH_FACTOR = 0.25F;
+    /** 护甲项系数：护甲值每 2 点折算 1 点基础伤害 */
+    public static final float ARMOR_FACTOR = 0.5F;
+    /** 拿不到施术者时的兜底基础伤害 */
+    public static final float FALLBACK_BASE_DAMAGE = 10.0F;
     /** 衰减间隔：15 秒内没有再叠层，当前层数 -1 */
     public static final int DECAY_TICKS = 15 * 20;
 
@@ -45,43 +75,136 @@ public class PolymerizationSE extends SpecialEffect {
 
     @SubscribeEvent
     public static void onHit(SlashBladeEvent.HitEvent event) {
-        ISlashBladeState state = event.getSlashBladeState();
-        // 只有佩戴了本特效的拔刀剑命中才生效
-        if (!state.hasSpecialEffect(SERegistry.POLYMERIZATION.getId())) return;
+        // 两种来源都算「带本特效」：
+        //  1) 刀状态里登记了本特效（定义里带 SE 的刀，例如布景之杖）；
+        //  2) 攻击用的就是启明星——直接按刀本体判定。
+        // 之所以要看 (2)：刀的特效列表是<b>物品栈上缓存的状态</b>，只在刀生成时从命名刀定义解析一次。
+        // 旧存档里已经存在的启明星，其状态是「定义加上这个 SE 之前」解析出来的，
+        // 特效列表里不会有本特效；只认状态的话它永远叠不上层。
+        boolean byState = event.getSlashBladeState().hasSpecialEffect(SERegistry.POLYMERIZATION.getId());
+        boolean byBlade = SceneryBlades.isQimingxing(event.getBlade());
+        if (!byState && !byBlade) return;
 
         LivingEntity target = event.getTarget();
         if (target == null || target.level().isClientSide()) return;
         LivingEntity attacker = event.getUser();
 
-        // 伤害来源取自攻击者
-        DamageSource source = attacker instanceof Player player
-                ? target.damageSources().playerAttack(player)
+        // 聚爆伤害无视护甲：用原版 magic 伤害类型（属于 #minecraft:bypasses_armor），
+        // 同时把攻击者作为来源实体挂上，击杀归属与统计仍然记在攻击者头上。
+        DamageSource source = attacker != null
+                ? attacker.damageSources().source(DamageTypes.MAGIC, attacker)
                 : target.damageSources().magic();
-        addStack(target, source);
+        addStack(target, source, attacker);
     }
 
     /**
-     * 给目标叠一层聚合；叠满 {@link #MAX_STACK} 层时触发一次额外伤害并清零。
+     * 当前生效的层数上限。
+     * <p>
+     * <b>这里是「提高上限」的唯一接缝</b>：默认 {@link #MAX_STACK}，手持「启明星」时为
+     * {@link #QIMINGXING_MAX_STACK}。后续再加入别的途径时也只改这一个方法，
+     * 伤害结算（{@link #explosionDamage(LivingEntity)}）会自动跟着变。
+     */
+    public static int maxStack(LivingEntity attacker) {
+        return isHoldingQimingxing(attacker) ? QIMINGXING_MAX_STACK : MAX_STACK;
+    }
+
+    /** 是否手持（主手或副手）「启明星」 */
+    private static boolean isHoldingQimingxing(LivingEntity attacker) {
+        if (attacker == null) {
+            return false;
+        }
+        return SceneryBlades.isQimingxing(attacker.getMainHandItem())
+                || SceneryBlades.isQimingxing(attacker.getOffhandItem());
+    }
+
+    /**
+     * 当前生效的引爆层数：层数<b>达到</b>该值即引爆。
+     * <p>
+     * 默认与层数上限一致（{@link #MAX_STACK}，即叠满 10 层引爆）；
+     * 手持「启明星」时为 {@link #QIMINGXING_TRIGGER_STACK} + 1 —— 也就是层数大于 5（叠到第 6 层）就引爆。
+     * 注意引爆层数与伤害结算层数是两件事：结算始终按 {@link #maxStack(LivingEntity)} 算，
+     * 所以启明星虽然引爆得更早，伤害仍按 13 层上限结算。
+     */
+    public static int triggerStack(LivingEntity attacker) {
+        return isHoldingQimingxing(attacker) ? QIMINGXING_TRIGGER_STACK + 1 : MAX_STACK;
+    }
+
+    /**
+     * 给目标叠一层聚合；层数<b>大于 {@link #TRIGGER_STACK}</b> 时触发一次聚爆<b>并清除层数</b>。
      * <p>
      * 侵蚀领域（{@code ErosionDomainEntity}）与本特效命中共用这一份逻辑。
      * 只应在服务端调用。
      * <p>
      * 这里<b>不播任何音效</b>：DENIA1~3 是达妮娅的语音，只应在展开侵蚀领域时触发
      * （见 {@code ErosionDomainSA}）。
+     *
+     * @param attacker 施术者：决定层数上限与聚爆伤害（最大生命值 / 当前护甲值）；允许为 {@code null}
      */
-    public static void addStack(LivingEntity target, DamageSource explosionSource) {
+    public static void addStack(LivingEntity target, DamageSource explosionSource, LivingEntity attacker) {
         CompoundTag data = target.getPersistentData();
-        int count = getEffectiveCount(target) + 1;
+        int cap = maxStack(attacker);
+        int count = Math.min(getEffectiveCount(target) + 1, cap);
 
-        if (count >= MAX_STACK) {
+        if (count >= triggerStack(attacker)) {
+            // 引爆：清除层数，下一轮重新从 1 层叠起。
+            // 伤害按「层数上限」结算，所以提前引爆不会削弱伤害（启明星就是这种情况）。
             data.remove(TAG_COUNT);
             data.remove(TAG_LAST);
-            target.hurt(explosionSource, EXPLOSION_DAMAGE);
+            target.hurt(explosionSource, explosionDamage(attacker));
             return;
         }
 
         data.putInt(TAG_COUNT, count);
+        data.putInt(TAG_CAP, cap);
         data.putLong(TAG_LAST, target.level().getGameTime());
+    }
+
+    // ------------------------------------------------------------------ 聚爆伤害（纯数值，便于离线核对）
+
+    /**
+     * 纯数值：基础聚爆伤害 = 最大生命值 × {@link #HEALTH_FACTOR} + 护甲值 × {@link #ARMOR_FACTOR}。
+     * <p>
+     * 护甲取的是<b>当前</b>护甲值（{@code LivingEntity#getArmorValue()}，即护甲属性当前值）：
+     * 没有穿任何提供护甲的装备时就是 0，此时只剩生命值那一项。
+     * 系数取默认值时：20 血 / 10 甲 = 10.0，20 血 / 20 甲 = 15.0，20 血 / 0 甲 = 5.0。
+     * <p>
+     * 最后钳到 {@code >= 0}：护甲值可以被效果压成负数，若放任下去可能算出负伤害
+     * （那样 {@code hurt} 的行为就没有意义了），所以这里兜住下界。
+     */
+    public static float baseExplosionDamage(float maxHealth, float armorValue) {
+        return Math.max(0.0F, maxHealth * HEALTH_FACTOR + armorValue * ARMOR_FACTOR);
+    }
+
+    /** 施术者视角的基础聚爆伤害；施术者为 {@code null} 时用 {@link #FALLBACK_BASE_DAMAGE} */
+    public static float baseExplosionDamage(LivingEntity attacker) {
+        return attacker == null
+                ? FALLBACK_BASE_DAMAGE
+                : baseExplosionDamage(attacker.getMaxHealth(), attacker.getArmorValue());
+    }
+
+    /**
+     * 纯数值：结算层数对应的伤害倍率。
+     * <p>
+     * 锚点 {@link #ANCHOR_STACK} 层为 {@code 1.0}，每多 {@link #DOUBLING_LAYERS} 层翻一倍——
+     * 于是结算层数 13 时正好是 10 的 <b>2 倍</b>（16 层 4 倍、19 层 8 倍……）。
+     */
+    public static float layerMultiplier(int layers) {
+        return (float) Math.pow(2.0, (layers - ANCHOR_STACK) / (double) DOUBLING_LAYERS);
+    }
+
+    /** 纯数值：给定结算层数与施术者属性，算出这一发聚爆的伤害 = 基础伤害 × 层数倍率 */
+    public static float explosionDamage(int layers, float maxHealth, float armorValue) {
+        return baseExplosionDamage(maxHealth, armorValue) * layerMultiplier(layers);
+    }
+
+    /**
+     * 施术者视角：这一发聚爆的实际伤害。
+     * <p>
+     * <b>结算层数取的是当前层数上限</b>（{@link #maxStack(LivingEntity)}），不是引爆时的实际层数——
+     * 也就是说提前引爆不会削弱伤害，而持有启明星（上限 13）时伤害是默认上限（10）的 2 倍。
+     */
+    public static float explosionDamage(LivingEntity attacker) {
+        return baseExplosionDamage(attacker) * layerMultiplier(maxStack(attacker));
     }
 
     /**
@@ -98,8 +221,8 @@ public class PolymerizationSE extends SpecialEffect {
         }
         long last = data.getLong(TAG_LAST);
         if (last <= 0L) {
-            // 旧数据没有时间戳：视为刚叠上，不做衰减
-            return Math.min(count, MAX_STACK);
+            // 旧数据没有时间戳：视为刚叠上，不做衰减（上限在叠层时施加，这里不截断）
+            return count;
         }
         return decayedCount(count, entity.level().getGameTime() - last);
     }
@@ -107,15 +230,18 @@ public class PolymerizationSE extends SpecialEffect {
     /**
      * 纯数值部分：给定层数与「距最后一次叠层经过了多少 tick」，算出衰减后的层数。
      * <p>
-     * 规则：每满 {@link #DECAY_TICKS} 层数 -1，最多减到 0。分离成纯函数便于离线核对（不依赖实体）。
+     * 规则：每满 {@link #DECAY_TICKS} 层数 -1，最多减到 0。
+     * <p>
+     * <b>这里刻意不按 {@link #MAX_STACK} 钳制</b>：上限是在叠层时按 {@link #maxStack(LivingEntity)}
+     * 施加的，存储层保持原值——日后加入提高上限的途径时，才不会被这里的默认上限截断。
+     * 分离成纯函数便于离线核对（不依赖实体）。
      */
     public static int decayedCount(int count, long elapsedTicks) {
-        long clamped = Math.min(count, MAX_STACK);
-        if (clamped <= 0L) {
+        if (count <= 0) {
             return 0;
         }
         long decayed = Math.max(0L, elapsedTicks) / DECAY_TICKS;
-        return (int) Math.max(0L, clamped - decayed);
+        return (int) Math.max(0L, (long) count - decayed);
     }
 
     /**
