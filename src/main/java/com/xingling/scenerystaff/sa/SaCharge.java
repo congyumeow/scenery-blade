@@ -15,7 +15,6 @@ import net.neoforged.neoforge.attachment.AttachmentType;
 import net.neoforged.neoforge.event.entity.living.LivingDeathEvent;
 import net.neoforged.neoforge.event.entity.living.LivingIncomingDamageEvent;
 import net.neoforged.neoforge.event.entity.player.AttackEntityEvent;
-import net.neoforged.neoforge.event.tick.PlayerTickEvent;
 import net.neoforged.neoforge.registries.DeferredHolder;
 import net.neoforged.neoforge.registries.DeferredRegister;
 import net.neoforged.neoforge.registries.NeoForgeRegistries;
@@ -27,6 +26,9 @@ import java.util.Map;
  * <p>
  * 两把最终刀的剑技不再「冷却到点就能放」，而是各自攒一条充能：攒满才能放，放完清空。
  * 未攒满时由 {@link SaChargeGate} 把剑技换成内置幻影刃。
+ * <p>
+ * 充能<b>只由战斗行为累积</b>——命中 {@link #GAIN_ON_HIT} / 击杀 {@link #GAIN_ON_KILL} /
+ * 受伤 {@link #GAIN_ON_HURT}，不随时间自然增长；且只在手持对应那把刀时累积。
  * <p>
  * 充能值存在玩家的 {@link AttachmentType} 上，一次拿到四件事：
  * {@code serialize} 持久化、{@code sync} 自动同步到客户端（HUD 直接读，无需自定义网络包）、
@@ -46,10 +48,6 @@ public final class SaCharge {
     private static final Map<ResourceLocation, Integer> COST_BY_SA = Map.of(
             SARegistry.EROSION_DOMAIN.getId(), 125,
             SARegistry.GIANT_SWORD.getId(), 125);
-
-    /** 自然回复检查间隔（tick）与每次增量 */
-    private static final int NATURAL_INTERVAL_TICKS = 20;
-    private static final int NATURAL_GAIN = 1;      // 约 0.8%/秒（按 125 计）
 
     /** 命中敌人 */
     private static final int GAIN_ON_HIT = 3;       // 2.4%：约 42 次命中充满
@@ -187,24 +185,6 @@ public final class SaCharge {
     }
 
     // ------------------------------------------------------------------ 增长
-
-    /**
-     * 自然回复。
-     * <p>
-     * 注：回音频段的强化效果已改为暴击率/暴击伤害（见 {@code WavebandUpgrade} 与
-     * {@code BladeCritHandler}），因此这里不再有充能速度加成。
-     */
-    @SubscribeEvent
-    public static void onPlayerTick(PlayerTickEvent.Post event) {
-        Player player = event.getEntity();
-        if (player.level().isClientSide() || player.tickCount % NATURAL_INTERVAL_TICKS != 0) {
-            return;
-        }
-        Charge charge = heldCharge(player);
-        if (charge != null && !isFull(player, charge)) {
-            add(player, charge, NATURAL_GAIN);
-        }
-    }
 
     /** 命中敌人 */
     @SubscribeEvent
