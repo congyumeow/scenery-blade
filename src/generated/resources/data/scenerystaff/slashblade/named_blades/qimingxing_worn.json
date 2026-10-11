@@ -2,12 +2,20 @@
   "creativeGroup": "scenerystaff:scenerystaff_tab",
   "enchantments": [
     {
-      "id": "minecraft:power",
+      "id": "minecraft:sharpness",
       "lvl": 3
     },
     {
       "id": "minecraft:unbreaking",
       "lvl": 3
+    },
+    {
+      "id": "minecraft:power",
+      "lvl": 5
+    },
+    {
+      "id": "minecraft:smite",
+      "lvl": 5
     }
   ],
   "name": "scenerystaff:qimingxing_worn",
@@ -23,6 +31,6 @@
     "carry_type": "default",
     "model": "scenerystaff:model/qimingxing/qimingxing.obj",
     "summon_sword_color": 11061472,
-    "texture": "scenerystaff:model/qimingxing/qimingxing.png"
+    "texture": "scenerystaff:model/qimingxing/qimingxing_base.png"
   }
 }
