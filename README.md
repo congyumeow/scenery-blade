@@ -1,9 +1,6 @@
 # SceneryBlade
 
-**布景之杖** —— 拔刀剑（SlashBlade: Resharped）附属，面向 Minecraft **1.20.1**。
-
-同一个 jar **同时支持 Forge 与 NeoForge** 1.20.1（两者的装载器 modId 都是 `forge`，
-且 NeoForge 47.x 就构建在 Forge 47.x 之上），无需分别构建。
+**布景之杖** —— 拔刀剑（SlashBlade: Resharped）附属，面向 Minecraft **1.20.1 / NeoForge**。
 
 以达妮娅与爱弥斯为主题，新增两条命名刀线、一套铁砧强化体系，以及一个可叠层的聚爆特效。
 
@@ -99,4 +96,3 @@
 ## 鸣谢
 
 - [SlashBlade: Resharped](https://github.com/0999312/SlashBlade_Resharped) —— 本模组赖以运行的前置
-- 上游仓库：<https://github.com/congyumeow/scenery-blade>
