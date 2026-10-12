@@ -22,6 +22,11 @@ java.toolchain.languageVersion = JavaLanguageVersion.of(17)
 println "Java: ${System.getProperty 'java.version'}, JVM: ${System.getProperty 'java.vm.version'} (${System.getProperty 'java.vendor'}), Arch: ${System.getProperty 'os.arch'}"
 
 legacyForge {
+    // 编译基线用 NeoForge 47.1.106。
+    //
+    // 产出的 jar **Forge 与 NeoForge 1.20.1 都能跑**：1.20.1 上两者共用装载器 modId `forge`
+    // （neoforge 这个 id 从 20.2 才启用），而 NeoForge 47.x 本身就构建在 Forge 47.x 之上，
+    // mods.toml 里声明的也正是 forge [47,)。所以不需要为两个加载器分别构建。
     enable {
         neoForgeVersion = project.neo_version   // 形如 1.20.1-47.1.106
     }
