@@ -46,7 +46,7 @@
   "slash_art.scenerystaff.giant_sword": "The Eternal Morning Star",
   "message.scenerystaff.domain_charging": "Erosion Domain charging (%s%%)",
   "message.scenerystaff.giant_sword_charging": "The Eternal Morning Star charging (%s%%)",
-  "tooltip.scenerystaff.crit_base": "§aCrit Rate §a%s §a/ Crit Damage §a%s",
+  "tooltip.scenerystaff.crit_base": "Crit Rate %s / Crit Damage %s",
   "tooltip.scenerystaff.waveband_level": "Waveband Resonance: %s / %s",
   "tooltip.scenerystaff.waveband_attack": "· Base Attack Damage +%s",
   "tooltip.scenerystaff.waveband_domain_cd": "· Erosion Domain cooldown -%ss",

@@ -46,7 +46,7 @@
   "slash_art.scenerystaff.giant_sword": "永远的启明星",
   "message.scenerystaff.domain_charging": "蚀域充能中（%s%%）",
   "message.scenerystaff.giant_sword_charging": "永远的启明星 充能中（%s%%）",
-  "tooltip.scenerystaff.crit_base": "§a暴击率 §a%s §a/ 暴击伤害 §a%s",
+  "tooltip.scenerystaff.crit_base": "暴击率 %s / 暴击伤害 %s",
   "tooltip.scenerystaff.waveband_level": "回音频段强化：%s / %s",
   "tooltip.scenerystaff.waveband_attack": "· 基础攻击力 +%s",
   "tooltip.scenerystaff.waveband_domain_cd": "· 蚀域冷却 -%ss",
