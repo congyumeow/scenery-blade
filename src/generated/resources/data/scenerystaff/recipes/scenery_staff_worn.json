@@ -1,0 +1,33 @@
+{
+  "type": "slashblade:shaped_blade",
+  "blade": "scenerystaff:scenery_staff_worn",
+  "category": "equipment",
+  "key": {
+    "A": {
+      "item": "minecraft:cherry_sapling"
+    },
+    "B": {
+      "item": "scenerystaff:xuzhi"
+    },
+    "C": {
+      "item": "minecraft:iron_ingot"
+    },
+    "D": {
+      "type": "slashblade:blade",
+      "item": "slashblade:slashblade",
+      "request": {
+        "kill": 100,
+        "name": "scenerystaff:chaoxi"
+      }
+    }
+  },
+  "pattern": [
+    " A ",
+    "BDB",
+    "C C"
+  ],
+  "result": {
+    "item": "slashblade:slashblade"
+  },
+  "show_notification": true
+}

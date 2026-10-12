@@ -1,0 +1,143 @@
+plugins {
+    id 'java-library'
+    id 'eclipse'
+    id 'idea'
+    id 'maven-publish'
+    id 'net.neoforged.moddev.legacyforge' version '2.0.146'
+}
+
+tasks.named('wrapper', Wrapper).configure {
+    distributionType = Wrapper.DistributionType.BIN
+}
+
+version = mod_version
+group = mod_group_id
+
+base {
+    archivesName = mod_id
+}
+
+java.toolchain.languageVersion = JavaLanguageVersion.of(17)
+
+println "Java: ${System.getProperty 'java.version'}, JVM: ${System.getProperty 'java.vm.version'} (${System.getProperty 'java.vendor'}), Arch: ${System.getProperty 'os.arch'}"
+
+legacyForge {
+    enable {
+        neoForgeVersion = project.neo_version   // 形如 1.20.1-47.1.106
+    }
+
+    runs {
+        client {
+            client()
+            systemProperty 'forge.enabledGameTestNamespaces', project.mod_id
+        }
+
+        server {
+            server()
+            systemProperty 'forge.enabledGameTestNamespaces', project.mod_id
+        }
+
+        data {
+            data()
+            programArguments.addAll '--mod', project.mod_id, '--all',
+                    '--output', file('src/generated/resources/').getAbsolutePath(),
+                    '--existing', file('src/main/resources/').getAbsolutePath()
+        }
+
+        configureEach {
+            systemProperty 'forge.logging.markers', 'REGISTRIES'
+            systemProperty 'forge.logging.console.level', 'debug'
+            logLevel = org.slf4j.event.Level.DEBUG
+        }
+    }
+
+    mods {
+        "${mod_id}" {
+            sourceSet(sourceSets.main)
+        }
+    }
+}
+
+sourceSets.main.resources { srcDir 'src/generated/resources' }
+
+configurations {
+    runtimeClasspath.extendsFrom localRuntime
+}
+
+repositories {
+    maven {
+        name = "CurseMaven"
+        url = "https://cursemaven.com"
+    }
+
+    maven {
+        name = "Modrinth"
+        url = "https://api.modrinth.com/maven"
+        content {
+            includeGroup "maven.modrinth"
+        }
+    }
+}
+
+dependencies {
+    compileOnly "net.neoforged.fancymodloader:language-java:${fml_version}"
+    compileOnly "net.neoforged.fancymodloader:core:${fml_version}"
+    compileOnly "net.neoforged.fancymodloader:events:${fml_version}"
+    compileOnly "net.neoforged.fancymodloader:loader:${fml_version}"
+
+    compileOnly 'org.spongepowered:mixin:0.8.5'
+    compileOnly 'org.slf4j:slf4j-api:2.0.1'
+    compileOnly 'com.google.code.findbugs:jsr305:3.0.2'
+
+    compileOnly 'org.joml:joml:1.10.5'
+    compileOnly 'com.mojang:datafixerupper:6.0.8'
+    compileOnly 'com.mojang:brigadier:1.1.8'
+    compileOnly 'io.netty:netty-buffer:4.1.82.Final'
+
+    modImplementation "curse.maven:slashblade-resharped-1022428:8090912"
+
+    compileOnly "maven.modrinth:jade:xJQHCmWJ"
+
+    compileOnly("maven.modrinth:irons-spells-n-spellbooks:9dM8iFPD") { transitive = false }
+}
+
+tasks.named('processResources', ProcessResources).configure {
+    var replaceProperties = [
+            minecraft_version: minecraft_version, minecraft_version_range: minecraft_version_range,
+            loader_version_range: loader_version_range,
+            neo_version: neo_version, neo_version_range: neo_version_range,
+            mod_id: mod_id, mod_name: mod_name, mod_license: mod_license, mod_version: mod_version,
+            mod_authors: mod_authors, mod_description: mod_description,
+    ]
+    inputs.properties replaceProperties
+
+    filesMatching(['META-INF/mods.toml', 'pack.mcmeta']) {
+        expand replaceProperties + [project: project]
+    }
+}
+
+tasks.named('jar', Jar).configure {
+    manifest {
+        attributes([
+                'Specification-Title'     : mod_id,
+                'Specification-Vendor'    : mod_authors,
+                'Specification-Version'   : '1',
+                'Implementation-Title'    : project.name,
+                'Implementation-Version'  : project.jar.archiveVersion,
+                'Implementation-Vendor'   : mod_authors,
+                'Implementation-Timestamp': new Date().format("yyyy-MM-dd'T'HH:mm:ssZ"),
+                // 关键：1.20.1 的 FML 是从这张 MANIFEST 的 MixinConfigs 属性里找 mixin 配置的，
+                // 而不是读 mods.toml（mods.toml 里写 [[mixins]] 对 1.20.1 无效，
+                // 表现为 mixin 静默不加载 —— 配置不注册、注入不生效、也不报错）。
+                'MixinConfigs'            : "${mod_id}.mixins.json"
+        ])
+    }
+}
+
+java {
+    withSourcesJar()
+}
+
+tasks.withType(JavaCompile).configureEach {
+    options.encoding = 'UTF-8'
+}

@@ -1,0 +1,36 @@
+{
+  "creativeGroup": "scenerystaff:scenerystaff_tab",
+  "enchantments": [
+    {
+      "id": "minecraft:sharpness",
+      "lvl": 3
+    },
+    {
+      "id": "minecraft:unbreaking",
+      "lvl": 3
+    },
+    {
+      "id": "minecraft:power",
+      "lvl": 5
+    },
+    {
+      "id": "minecraft:smite",
+      "lvl": 5
+    }
+  ],
+  "name": "scenerystaff:scenery_staff_worn",
+  "properties": {
+    "attack_base": 10.0,
+    "max_damage": 200,
+    "slash_art": "slashblade:wave_edge",
+    "sword_type": [
+      "bewitched"
+    ]
+  },
+  "render": {
+    "carry_type": "default",
+    "model": "scenerystaff:model/scenery/scenery.obj",
+    "summon_sword_color": 8366272,
+    "texture": "scenerystaff:model/scenery/scenery.png"
+  }
+}

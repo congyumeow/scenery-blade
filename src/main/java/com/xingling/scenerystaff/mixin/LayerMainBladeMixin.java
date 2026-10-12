@@ -1,0 +1,54 @@
+package com.xingling.scenerystaff.mixin;
+
+import com.mojang.blaze3d.vertex.PoseStack;
+import com.xingling.scenerystaff.blade.SceneryBlades;
+import mods.flammpfeil.slashblade.client.renderer.layers.LayerMainBlade;
+import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.injection.At;
+import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+
+/**
+ * 只截断 SlashBlade「把快捷栏第 1 格的刀当作待机刀渲染」这一条路径（且仅针对本模组的刀）。
+ * <p>
+ * {@code LayerMainBlade.renderOffhandItem} 在副手为空时会转而调用
+ * {@code renderHotbarItem}，把快捷栏第 0 格的刀渲染成待机刀——于是主手换成其他道具后，
+ * 布景之杖看起来像装备到了副手，实际并未装备。这里在 HEAD 处取消该渲染。
+ * <p>
+ * 真正放进副手的刀走的是 {@code renderStandbyBlade(offhandStack)} 分支，不受本 mixin 影响，
+ * 因此副手装备时仍会正常显示。
+ * <p>
+ * {@code remap = false}：SlashBlade 是模组类，其方法名不需要（也不应该）经过混淆重映射。
+ * <p>
+ * <b>注意：本 mixin 是否生效，取决于 jar 的 MANIFEST 里有没有 {@code MixinConfigs} 属性</b>
+ * （见 build.gradle 的 jar 任务）。1.20.1 的 FML 只从 MANIFEST 收集 mixin 配置，
+ * {@code mods.toml} 里写 {@code [[mixins]]} 是无效的（那一项属于 NeoForge 的新格式），
+ * 而且失效时完全静默——配置不注册、注入不生效，也不报任何错。
+ */
+@Mixin(value = LayerMainBlade.class, remap = false)
+public class LayerMainBladeMixin {
+
+    @Inject(method = "renderHotbarItem", at = @At("HEAD"), cancellable = true)
+    private void scenerystaff$skipHotbarStandbyBlade(PoseStack matrixStack, MultiBufferSource bufferIn, int lightIn,
+                                                     LivingEntity entity, CallbackInfo ci) {
+        if (!(entity instanceof Player player)) {
+            return;
+        }
+        // 与目标方法一致的取值：快捷栏第 0 格
+        ItemStack hotbarBlade = player.getInventory().getItem(0);
+        if (hotbarBlade.isEmpty()) {
+            return;
+        }
+        // 仅拦截本模组的刀（以刀模型命名空间判定），其他拔刀剑保持原有的待机刀表现。
+        // 判定走 SceneryBlades.isOurModel：这里要的是「模型属于本模组」，
+        // 与 SceneryBlades.isSceneryBlade（按注册 ID、只认布景之杖线）不是一回事，
+        // 用错会漏掉启明星线的两把刀。
+        if (SceneryBlades.isOurModel(hotbarBlade)) {
+            ci.cancel();
+        }
+    }
+}

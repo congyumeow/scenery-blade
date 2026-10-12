@@ -1,0 +1,30 @@
+{
+  "type": "slashblade:shaped_blade",
+  "blade": "scenerystaff:chaoxi",
+  "category": "equipment",
+  "key": {
+    "A": {
+      "item": "minecraft:blue_dye"
+    },
+    "B": {
+      "item": "minecraft:iron_ingot"
+    },
+    "C": {
+      "item": "minecraft:blue_wool"
+    },
+    "D": {
+      "type": "slashblade:blade",
+      "item": "slashblade:slashblade_white",
+      "request": {}
+    }
+  },
+  "pattern": [
+    " A ",
+    "BDB",
+    " C "
+  ],
+  "result": {
+    "item": "slashblade:slashblade"
+  },
+  "show_notification": true
+}

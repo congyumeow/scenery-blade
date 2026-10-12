@@ -1,0 +1,36 @@
+{
+  "creativeGroup": "scenerystaff:scenerystaff_tab",
+  "enchantments": [
+    {
+      "id": "minecraft:sharpness",
+      "lvl": 3
+    },
+    {
+      "id": "minecraft:unbreaking",
+      "lvl": 3
+    },
+    {
+      "id": "minecraft:power",
+      "lvl": 5
+    },
+    {
+      "id": "minecraft:smite",
+      "lvl": 5
+    }
+  ],
+  "name": "scenerystaff:qimingxing_worn",
+  "properties": {
+    "attack_base": 8.0,
+    "max_damage": 180,
+    "slash_art": "slashblade:wave_edge",
+    "sword_type": [
+      "bewitched"
+    ]
+  },
+  "render": {
+    "carry_type": "default",
+    "model": "scenerystaff:model/qimingxing/qimingxing.obj",
+    "summon_sword_color": 11061472,
+    "texture": "scenerystaff:model/qimingxing/qimingxing_base.png"
+  }
+}

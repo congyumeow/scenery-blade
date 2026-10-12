@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "A": {
+      "item": "scenerystaff:xuzhi"
+    },
+    "B": {
+      "item": "scenerystaff:hushenfu"
+    }
+  },
+  "pattern": [
+    " A ",
+    "ABA",
+    " A "
+  ],
+  "result": {
+    "item": "scenerystaff:aemeath_waveband"
+  },
+  "show_notification": true
+}

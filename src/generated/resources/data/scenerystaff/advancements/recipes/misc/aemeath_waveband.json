@@ -1,0 +1,35 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_hushenfu": {
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "scenerystaff:hushenfu"
+            ]
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_the_recipe": {
+      "conditions": {
+        "recipe": "scenerystaff:aemeath_waveband"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    }
+  },
+  "requirements": [
+    [
+      "has_hushenfu",
+      "has_the_recipe"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "scenerystaff:aemeath_waveband"
+    ]
+  },
+  "sends_telemetry_event": false
+}

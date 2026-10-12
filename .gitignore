@@ -1,0 +1,34 @@
+# eclipse
+bin
+*.launch
+.settings
+.metadata
+.classpath
+.project
+
+# idea
+out
+*.ipr
+*.iws
+*.iml
+.idea
+
+# gradle
+build
+.gradle
+!gradle/wrapper/gradle-wrapper.jar
+
+# other
+eclipse
+run
+runs
+run-data
+.vscode
+
+# OS
+.DS_Store
+Thumbs.db
+
+# datagen 缓存（与 master 分支一致）
+/src/generated/resources/.cache/
+

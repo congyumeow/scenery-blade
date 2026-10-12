@@ -1,0 +1,33 @@
+{
+  "type": "slashblade:shaped_blade",
+  "blade": "scenerystaff:qimingxing_worn",
+  "category": "equipment",
+  "key": {
+    "A": {
+      "item": "scenerystaff:xuzhi"
+    },
+    "B": {
+      "item": "minecraft:iron_ingot"
+    },
+    "L": {
+      "item": "minecraft:lapis_lazuli"
+    },
+    "X": {
+      "type": "slashblade:blade",
+      "item": "slashblade:slashblade",
+      "request": {
+        "kill": 100,
+        "name": "scenerystaff:chaoxi"
+      }
+    }
+  },
+  "pattern": [
+    " L ",
+    "AXA",
+    "B B"
+  ],
+  "result": {
+    "item": "slashblade:slashblade"
+  },
+  "show_notification": true
+}
