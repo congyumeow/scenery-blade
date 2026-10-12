@@ -1,6 +1,6 @@
 # SceneryBlade
 
-**布景之杖** —— 拔刀剑（SlashBlade: Resharped）附属，面向 Minecraft **1.20.1 / NeoForge**。
+**布景之杖** —— 拔刀剑（SlashBlade: Resharped）附属，面向 Minecraft **1.20.1 / NeoForge以及Forge**。
 
 以达妮娅与爱弥斯为主题，新增两条命名刀线、一套铁砧强化体系，以及一个可叠层的聚爆特效。
 
