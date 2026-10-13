@@ -95,9 +95,26 @@ public final class SceneryBlades {
 
     // ------------------------------------------------------------------ 具体刀
 
-    /** 是否为布景之杖线的上位刀「布景之杖」（唯一带侵蚀领域 SA 的那把） */
+    /**
+     * 是否为布景之杖线的上位刀「布景之杖」（唯一带侵蚀领域 SA 的那把）。
+     * <p>
+     * <b>不要</b>用它表达「两把终盘刀」——它只认布景之杖。要那个语义请用
+     * {@link #isAnyFinalBlade(ItemStack)}；两者混用会让启明星线错拿成侵蚀领域的充能条。
+     */
     public static boolean isFinalBlade(ItemStack stack) {
         return is(stack, SceneryIds.SCENERY_STAFF);
+    }
+
+    /**
+     * 是否为两条线的<b>任意一把</b>上位刀：「布景之杖」或「永远的启明星」。
+     * <p>
+     * 用于「两把终盘刀共享同一套待遇」的场合，例如终盘刀持有增益
+     * （力量 III + 生命回复 II，见 {@code FinalBladeBuffHandler}）。
+     * 与按线区分、按具体刀区分的判定（{@link #isSceneryBlade} / {@link #isFinalBlade} /
+     * {@link #isQimingxing}）不是一回事。
+     */
+    public static boolean isAnyFinalBlade(ItemStack stack) {
+        return isFinalBlade(stack) || isQimingxing(stack);
     }
 
     /**

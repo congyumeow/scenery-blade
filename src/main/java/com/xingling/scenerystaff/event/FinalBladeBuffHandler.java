@@ -13,6 +13,9 @@ import net.minecraftforge.fml.common.Mod;
 /**
  * 终盘刀持有增益：主手或副手拿着「布景之杖 / 永远的启明星」时，持续维持力量 III 与生命回复 II。
  * <p>
+ * 两把终盘刀共享这组增益，因此判定走 {@link SceneryBlades#isAnyFinalBlade}
+ * （<b>不是</b> {@code isFinalBlade} —— 那个只认布景之杖，会让启明星线整条吃不到增益）。
+ * <p>
  * 1.20.1 上没有 {@code PlayerTickEvent.Post}，用 {@link TickEvent.PlayerTickEvent} 的 END 阶段。
  */
 @Mod.EventBusSubscriber(modid = SceneryStaff.MODID)
@@ -42,7 +45,7 @@ public class FinalBladeBuffHandler {
         if (player.isSpectator()) {
             return;
         }
-        if (!SceneryBlades.isHolding(player, SceneryBlades::isFinalBlade)) {
+        if (!SceneryBlades.isHolding(player, SceneryBlades::isAnyFinalBlade)) {
             return;
         }
 
