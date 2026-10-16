@@ -11,6 +11,14 @@ import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.event.tick.PlayerTickEvent;
 
+/**
+ * 终盘刀的持有增益：主手或副手拿着**布景之杖**或**永远的启明星**时，
+ * 持续获得力量 III 与生命回复 II；收刀后最多 2 秒内消失。
+ * <p>
+ * 判定用 {@link SceneryBlades#isTopTier}——即识别表里 {@code tier == FINAL} 的那两把刀。
+ * 注意别与 {@link SceneryBlades#isFinalBlade} 混淆：后者按名字只指布景之杖自己（历史命名），
+ * 不含启明星线。
+ */
 @EventBusSubscriber(modid = SceneryStaff.MODID)
 public class FinalBladeBuffHandler {
 
@@ -35,7 +43,8 @@ public class FinalBladeBuffHandler {
         if (player.isSpectator()) {
             return;
         }
-        if (!SceneryBlades.isHolding(player, SceneryBlades::isFinalBlade)) {
+        // 两把终盘刀（布景之杖 / 永远的启明星）都提供这份增益
+        if (!SceneryBlades.isHolding(player, SceneryBlades::isTopTier)) {
             return;
         }
 

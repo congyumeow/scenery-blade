@@ -10,9 +10,25 @@
 | --- | --- |
 | Minecraft | 1.21.1 |
 | NeoForge | 21.1.228 |
-| 必需 | [SlashBlade: Resharped](https://www.curseforge.com/minecraft/mc-mods/slashblade-resharped) **2.0.2** 以上 —— 本模组赖以运行的前置 |
+| 必需 | [SlashBlade: Resharped](https://www.curseforge.com/minecraft/mc-mods/slashblade-resharped) **2.0.2** 以上 —— 本模组赖以运行的前置，已在 **2.0.2 ～ 2.1.9** 实测 |
 | 可选 | [Iron's Spells 'n Spellbooks](https://www.curseforge.com/minecraft/mc-mods/irons-spells-n-spellbooks) —— 刀会自带法术并加成法术属性 |
 | 可选 | [Jade](https://modrinth.com/mod/jade) —— 显示聚爆层数 |
+
+### 拔刀剑版本适配
+
+拔刀剑（SlashBlade: Resharped）**2.0.8** 起做过一次内部重构，把待机刀渲染那几个方法从
+`LayerMainBlade` 挪到了新的父类 `LayerSlashBlade`。本模组对这种搬家做了适配：
+
+| 拔刀剑版本 | 方法所在类 | 本模组 |
+| --- | --- | --- |
+| 2.0.2 ～ 2.0.7 | `LayerMainBlade` | 生效（`LayerMainBladeMixin`） |
+| 2.0.8 ～ 2.1.9 | `LayerSlashBlade` | 生效（`LayerSlashBladeMixin`） |
+| 未来再次搬家 | — | 安静跳过，**不会**让游戏在加载阶段报错 |
+
+两条注入互斥，实际只会有一条命中，因此不需要按版本号分支；打包进 jar 的也就不会因为上游
+换了类名而崩在 `InvalidInjectionException` 上。**注意：如果你用的是比上表更新的拔刀剑版本，
+副手待机刀的显示修正可能不再生效**——那说明上游又动过这批方法，请回报以便适配。
+
 
 ## 两条刀线
 

@@ -26,6 +26,9 @@ versionRange="${minecraft_version_range}"
 ordering="NONE"
 side="BOTH"
 
+# 拔刀剑前置。下限 2.0.2 是编译所用版本，也是本模组验证过的第一个版本；
+# 待机刀渲染拦截对 2.0.2～2.0.7（方法在 LayerMainBlade）与 2.0.8～2.1.9（方法上移到父类
+# LayerSlashBlade）两个分支都做了适配，见 mixin 包下两个 Layer*Mixin 的说明。
 [[dependencies.${mod_id}]]
 modId="slashblade"
 type="required"
