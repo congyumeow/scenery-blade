@@ -35,6 +35,12 @@ versionRange="${minecraft_version_range}"
 ordering="NONE"
 side="BOTH"
 
+# 拔刀剑前置。下限 1.9.0 是本模组声明的最低支持版本，开发与验证所用的是 1.9.65。
+#
+# 待机刀渲染拦截准备了 LayerMainBlade 与 LayerSlashBlade 两条注入：
+# 前者是当前两个可用版本（1.20.1 的 1.9.65、1.21.1 分支开发期源码）里实际承载
+# renderHotbarItem 的类；后者目前并不存在，属于「上游日后若把这批方法上移到父类」
+# 的前瞻保险。详见 mixin 包下两个 Layer*Mixin 的说明。
 [[dependencies.${mod_id}]]
 modId="slashblade"
 mandatory=true

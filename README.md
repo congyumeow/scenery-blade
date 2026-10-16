@@ -10,9 +10,24 @@
 | --- | --- |
 | Minecraft | 1.20.1 |
 | 模组加载器 | **Forge 47.x** 或 **NeoForge 47.x**（皆可） |
-| 必需 | [SlashBlade: Resharped](https://www.curseforge.com/minecraft/mc-mods/slashblade-resharped) 1.9.0 以上 |
+| 必需 | [SlashBlade: Resharped](https://www.curseforge.com/minecraft/mc-mods/slashblade-resharped) 1.9.0 以上（开发环境为 **1.9.65**） |
 | 可选 | [Iron's Spells 'n Spellbooks](https://www.curseforge.com/minecraft/mc-mods/irons-spells-n-spellbooks) —— 刀会自带法术并加成法术属性 |
 | 可选 | [Jade](https://modrinth.com/mod/jade) —— 显示聚爆层数 |
+
+### 拔刀剑版本适配
+
+待机刀渲染方法 `renderHotbarItem` 在当前两个可用版本里都位于 `LayerMainBlade`
+（1.20.1 线的 1.9.65、1.21.1 分支开发期所用的源码，两者该类都直接继承 `RenderLayer`）。
+
+本模组除此以外**还准备了一条针对 `LayerSlashBlade` 的注入**，而该父类目前**并不存在** ——
+它是一份前瞻保险：若上游日后把这批方法上移到父类，适配会自动接管，不必改代码。
+两条注入互斥，实际只会命中一条，因此本模组不会因为上游换了类名而崩在
+`InvalidInjectionException` 上。
+
+代价是反过来的：上游真的换了位置或改了方法名时，修复会**安静失效**
+（最多留一行 DEBUG 日志），而不是让游戏加载失败。排查「副手没装备却显示待机刀」时，
+先看日志里注上了哪个目标类。
+
 
 ## 两条刀线
 
