@@ -29,7 +29,7 @@ public class ErosionDomainEntity extends Entity {
     private UUID ownerId;
     private static final int DAMAGE_INTERVAL = 20; // 每秒伤害一次
     private int timer = 0;
-    private static final float DAMAGE_AMOUNT = 3.0F;
+    private static final float DAMAGE_AMOUNT = 10.0F;
     /**
      * 领域半径（格）。
      * <p>

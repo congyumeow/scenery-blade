@@ -116,6 +116,7 @@ gradle-app.setting
 run/
 runs/
 /src/generated/resources/.cache/
+docs/
 
 # Avoid ignoring Gradle wrapper jar file (.jar files are usually ignored)
 !gradle-wrapper.jar
