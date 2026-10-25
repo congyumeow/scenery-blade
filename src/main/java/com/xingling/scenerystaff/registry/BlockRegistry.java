@@ -25,4 +25,14 @@ public class BlockRegistry {
                             .strength(0.5F)
                             .sound(SoundType.WOOL)
                             .pushReaction(PushReaction.DESTROY)));
+
+    /**
+     * 新维度的地基方块「达妮娅之底」。
+     */
+    public static final DeferredHolder<Block, Block> DENIA_GROUND =
+            REGISTRY.register("denia_ground", () -> new Block(
+                    BlockBehaviour.Properties.of()
+                            .strength(-1.0F, 3600000.0F)
+                            .sound(SoundType.AMETHYST)
+                            .pushReaction(PushReaction.BLOCK)));
 }

@@ -54,5 +54,6 @@
   "jade.scenerystaff.polymerization": "Polymerization: %s / %s",
   "jade.scenerystaff.polymerization_decay": "· Decays in: %ss",
   "config.jade.plugin_scenerystaff.polymerization": "Polymerization",
+  "block.scenerystaff.denia_ground": "§d§lDania's Firmament",
   "itemGroup.scenerystaff_tab": "★Denia★"
 }

@@ -54,5 +54,6 @@
   "jade.scenerystaff.polymerization": "聚合·聚爆：%s / %s 层",
   "jade.scenerystaff.polymerization_decay": "· 下次衰减：%ss",
   "config.jade.plugin_scenerystaff.polymerization": "聚合·聚爆",
+  "block.scenerystaff.denia_ground": "§d§l达妮娅之底",
   "itemGroup.scenerystaff_tab": "★达妮娅★"
 }

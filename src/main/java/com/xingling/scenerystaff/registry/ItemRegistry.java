@@ -5,6 +5,7 @@ import com.xingling.scenerystaff.item.BirthdayCakeBlockItem;
 import com.xingling.scenerystaff.item.DescribedItem;
 import com.xingling.scenerystaff.item.XuzhiItem;
 import net.minecraft.core.registries.Registries;
+import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Rarity;
 import net.neoforged.neoforge.registries.DeferredHolder;
@@ -60,4 +61,11 @@ public class ItemRegistry {
     public static final DeferredHolder<Item, Item> AEMEATH_WAVEBAND =
             REGISTRY.register("aemeath_waveband", () -> new DescribedItem(
                     new Item.Properties().stacksTo(16), "item.scenerystaff.aemeath_waveband.desc."));
+
+    /**
+     * 新维度地基方块「达妮娅之底」的物品形态。
+     */
+    public static final DeferredHolder<Item, Item> DENIA_GROUND =
+            REGISTRY.register("denia_ground", () -> new BlockItem(
+                    BlockRegistry.DENIA_GROUND.get(), new Item.Properties()));
 }
