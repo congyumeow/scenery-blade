@@ -1,0 +1,17 @@
+{
+  "type": "scenerystaff:xuzhi_space",
+  "generator": {
+    "type": "minecraft:flat",
+    "settings": {
+      "layers": [
+        {
+          "block": "scenerystaff:xuzhi_block",
+          "height": 3
+        }
+      ],
+      "biome": "minecraft:the_end",
+      "features": false,
+      "lakes": false
+    }
+  }
+}

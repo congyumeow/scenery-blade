@@ -54,6 +54,8 @@
   "jade.scenerystaff.polymerization": "Polymerization: %s / %s",
   "jade.scenerystaff.polymerization_decay": "· Decays in: %ss",
   "config.jade.plugin_scenerystaff.polymerization": "Polymerization",
-  "block.scenerystaff.denia_ground": "§d§lDania's Firmament",
+  "block.scenerystaff.xuzhi_block": "§d§lXuzhi Block",
+  "key.categories.scenerystaff": "Scenery Staff",
+  "key.scenerystaff.xuzhi_space": "Enter / Leave Xuzhi Space",
   "itemGroup.scenerystaff_tab": "★Denia★"
 }

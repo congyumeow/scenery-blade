@@ -63,9 +63,9 @@ public class ItemRegistry {
                     new Item.Properties().stacksTo(16), "item.scenerystaff.aemeath_waveband.desc."));
 
     /**
-     * 新维度地基方块「达妮娅之底」的物品形态。
+     * 新维度地基方块「虚质方块」的物品形态。
      */
-    public static final DeferredHolder<Item, Item> DENIA_GROUND =
-            REGISTRY.register("denia_ground", () -> new BlockItem(
-                    BlockRegistry.DENIA_GROUND.get(), new Item.Properties()));
+    public static final DeferredHolder<Item, Item> XUZHI_BLOCK =
+            REGISTRY.register("xuzhi_block", () -> new BlockItem(
+                    BlockRegistry.XUZHI_BLOCK.get(), new Item.Properties()));
 }

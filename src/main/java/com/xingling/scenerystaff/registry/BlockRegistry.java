@@ -27,10 +27,10 @@ public class BlockRegistry {
                             .pushReaction(PushReaction.DESTROY)));
 
     /**
-     * 新维度的地基方块「达妮娅之底」。
+     * 新维度的地基方块「虚质方块」。
      */
-    public static final DeferredHolder<Block, Block> DENIA_GROUND =
-            REGISTRY.register("denia_ground", () -> new Block(
+    public static final DeferredHolder<Block, Block> XUZHI_BLOCK =
+            REGISTRY.register("xuzhi_block", () -> new Block(
                     BlockBehaviour.Properties.of()
                             .strength(-1.0F, 3600000.0F)
                             .sound(SoundType.AMETHYST)

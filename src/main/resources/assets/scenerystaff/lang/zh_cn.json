@@ -54,6 +54,8 @@
   "jade.scenerystaff.polymerization": "聚合·聚爆：%s / %s 层",
   "jade.scenerystaff.polymerization_decay": "· 下次衰减：%ss",
   "config.jade.plugin_scenerystaff.polymerization": "聚合·聚爆",
-  "block.scenerystaff.denia_ground": "§d§l达妮娅之底",
+  "block.scenerystaff.xuzhi_block": "§d§l虚质方块",
+  "key.categories.scenerystaff": "布景之杖",
+  "key.scenerystaff.xuzhi_space": "进入 / 离开虚质空间",
   "itemGroup.scenerystaff_tab": "★达妮娅★"
 }
