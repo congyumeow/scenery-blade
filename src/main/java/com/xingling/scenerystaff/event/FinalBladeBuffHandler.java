@@ -11,10 +11,13 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 
 /**
- * 终盘刀持有增益：主手或副手拿着「布景之杖 / 永远的启明星」时，持续维持力量 III 与生命回复 II。
+ * 终盘刀的持有增益：主手或副手拿着**布景之杖**或**永远的启明星**时，
+ * 持续获得力量 III 与生命回复 II；收刀后最多 2 秒内消失。
  * <p>
- * 两把终盘刀共享这组增益，因此判定走 {@link SceneryBlades#isAnyFinalBlade}
- * （<b>不是</b> {@code isFinalBlade} —— 那个只认布景之杖，会让启明星线整条吃不到增益）。
+ * 判定用 {@link SceneryBlades#isTopTier}——即识别表里 {@code tier == FINAL} 的那几把刀
+ * （新增的终盘刀只要在 {@code SPECS} 里标成 FINAL，就会自动获得这份增益）。
+ * 注意别与 {@link SceneryBlades#isFinalBlade} 混淆：后者按名字只指布景之杖自己（历史命名），
+ * 不含启明星线。
  * <p>
  * 1.20.1 上没有 {@code PlayerTickEvent.Post}，用 {@link TickEvent.PlayerTickEvent} 的 END 阶段。
  */
@@ -45,7 +48,8 @@ public class FinalBladeBuffHandler {
         if (player.isSpectator()) {
             return;
         }
-        if (!SceneryBlades.isHolding(player, SceneryBlades::isAnyFinalBlade)) {
+        // 全部终盘刀都提供这份增益
+        if (!SceneryBlades.isHolding(player, SceneryBlades::isTopTier)) {
             return;
         }
 

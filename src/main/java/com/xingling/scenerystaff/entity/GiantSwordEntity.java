@@ -48,7 +48,7 @@ public class GiantSwordEntity extends Entity {
     /** 落地后停留时间（tick）：5 秒 */
     public static final int GROUND_LIFE_TICKS = 5 * 20;
     /** 落地 AOE 半径（格） */
-    public static final float AOE_RADIUS = 10.0F;
+    public static final float AOE_RADIUS = 20.0F;
     /** AOE 伤害系数：刀攻击力 × 3.4 */
     public static final float DAMAGE_MULTIPLIER = 3.4F;
     /**
@@ -132,14 +132,21 @@ public class GiantSwordEntity extends Entity {
                 ? owner.damageSources().indirectMagic(this, owner)
                 : this.damageSources().magic();
 
-        AABB aabb = this.getBoundingBox().inflate(AOE_RADIUS);
+        // ---- 以「落点」为球心、半径 AOE_RADIUS 的【球形】范围 ----
+        double cx = this.getX();
+        double cy = this.landY;
+        double cz = this.getZ();
+        double radius = AOE_RADIUS;
+        double radiusSq = radius * radius;
+        AABB box = new AABB(cx - radius, cy - radius, cz - radius,
+                            cx + radius, cy + radius, cz + radius);
+
         // 只打「当前会攻击玩家」的生物，与侵蚀领域保持一致的判定
-        List<LivingEntity> targets = serverLevel.getEntitiesOfClass(LivingEntity.class, aabb,
+        List<LivingEntity> targets = serverLevel.getEntitiesOfClass(LivingEntity.class, box,
                 e -> e != owner && e.isAlive()
-                        && (e instanceof Enemy
-                            || (e instanceof NeutralMob nm && owner != null && nm.isAngryAt(owner))
-                            || (e instanceof Mob mob && owner != null && mob.getTarget() == owner))
-                        && e.distanceToSqr(this) <= AOE_RADIUS * AOE_RADIUS);
+                        && TargetFilters.isAbilityTarget(e, owner)
+                        // 三维球面判定：水平与垂直一视同仁，斜对角不会因为落在方盒角上而被打到
+                        && e.distanceToSqr(cx, cy, cz) <= radiusSq);
 
         float amount = (float) this.damage;
         for (LivingEntity target : targets) {

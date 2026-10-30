@@ -1,7 +1,7 @@
 package com.xingling.scenerystaff;
 
 import com.xingling.scenerystaff.compat.ironsspells.IronsSpellsCompat;
-import com.xingling.scenerystaff.network.SyncChargeMessage;
+import com.xingling.scenerystaff.network.SceneryNetwork;
 import com.xingling.scenerystaff.registry.*;
 import com.xingling.scenerystaff.sa.SaCharge;
 import net.minecraft.resources.ResourceLocation;
@@ -41,6 +41,7 @@ public class SceneryStaff {
         ItemRegistry.REGISTRY.register(modEventBus);
         ItemTabRegistry.REGISTRY.register(modEventBus);
         SERegistry.REGISTRY.register(modEventBus);
+        MobEffectRegistry.REGISTRY.register(modEventBus);
         SARegistry.REGISTRY.register(modEventBus);
         ComboStateRegistry.COMBO_STATE.register(modEventBus);
         EntityRegistry.REGISTRY.register(modEventBus);
@@ -48,8 +49,8 @@ public class SceneryStaff {
         // 玩家能力（SA 充能值：持久化在玩家身上）
         MinecraftForge.EVENT_BUS.register(SaCharge.class);
 
-        // 网络通道：SA 充能的服务端 → 客户端同步（1.20.1 的能力不会自动同步）
-        SyncChargeMessage.register();
+        // 网络通道：SA 充能同步 + 虚质空间进出请求（1.20.1 的能力不会自动同步）
+        SceneryNetwork.initialize();
 
         // 铁魔法是可选联动。必须用 isLoaded 守卫把调用包起来：
         // 否则加载 SceneryStaff 时会尝试解析 IronsSpellsCompat，未安装铁魔法就 NoClassDefFoundError；

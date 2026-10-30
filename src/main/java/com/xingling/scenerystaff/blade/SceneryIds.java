@@ -27,6 +27,9 @@ public final class SceneryIds {
     /** 基础刀「潮汐」 */
     public static final ResourceLocation CHAOXI = SceneryStaff.prefix("chaoxi");
 
+    /** 不屈命定之冠（卡提希娅） */
+    public static final ResourceLocation CARTETHYIA = SceneryStaff.prefix("cartethyia");
+
     // ------------------------------------------------------------------ 剑技 / 连击状态 / 实体
     // 同一个名字要同时注册进这三类注册表，因此路径与完整 ID 一并提供。
 
@@ -37,6 +40,15 @@ public final class SceneryIds {
     /** 剑技「永远的启明星」（同时是连击状态 id 与实体注册名） */
     public static final String GIANT_SWORD_PATH = "giant_sword";
     public static final ResourceLocation GIANT_SWORD = SceneryStaff.prefix(GIANT_SWORD_PATH);
+
+    /** 不屈命定之冠专属剑技「自由骑士之舞」的注册路径 */
+    public static final String DEFIER_THORN_PATH = "defier_thorn";
+    public static final ResourceLocation DEFIER_THORN = SceneryStaff.prefix(DEFIER_THORN_PATH);
+
+    /** 不屈命定之冠的三把下位刀：奥特尔 / 提尔芬 / 赫格利（合称为下方毕业刀的材料）*/
+    public static final ResourceLocation AOTER = SceneryStaff.prefix("aoter");
+    public static final ResourceLocation TYRFING = SceneryStaff.prefix("tyrfing");
+    public static final ResourceLocation HEGELI = SceneryStaff.prefix("hegeli");
 
     private SceneryIds() {
     }

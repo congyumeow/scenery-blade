@@ -2,6 +2,7 @@ package com.xingling.scenerystaff.registry;
 
 import com.xingling.scenerystaff.SceneryStaff;
 import com.xingling.scenerystaff.blade.SceneryIds;
+import com.xingling.scenerystaff.sa.DefierThornSA;
 import com.xingling.scenerystaff.sa.ErosionDomainSA;
 import com.xingling.scenerystaff.sa.GiantSwordSA;
 import mods.flammpfeil.slashblade.slasharts.SlashArts;
@@ -25,4 +26,11 @@ public class SARegistry {
      */
     public static final RegistryObject<SlashArts> GIANT_SWORD =
             REGISTRY.register(SceneryIds.GIANT_SWORD_PATH, GiantSwordSA::new);
+
+    /**
+     * 自由骑士之舞：不屈命定之冠专属剑技，映射到 {@code scenerystaff:defier_thorn} 连击状态，
+     * 由该状态时间轴第 0 帧结算视角正前方长方体的范围伤害（见 DefierThornSA）。
+     */
+    public static final RegistryObject<SlashArts> DEFIER_THORN =
+            REGISTRY.register(SceneryIds.DEFIER_THORN_PATH, DefierThornSA::new);
 }

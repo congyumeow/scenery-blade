@@ -10,29 +10,30 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-
 /**
- * 针对 {@code LayerSlashBlade} 的<b>前瞻性</b>注入：目标类目前<b>并不存在</b>。
- *
- * <h2>现状（已核实）</h2>
- * 待机刀渲染方法 {@code renderHotbarItem} 在当前两个可用版本里都定义在
- * {@code LayerMainBlade} 上，且该类都是直接 {@code extends RenderLayer}：
- * <ul>
- *   <li>1.20.1 线的拔刀剑 1.9.65；</li>
- *   <li>1.21.1 线的拔刀剑（1.21.1 分支开发期所用的源码）。</li>
- * </ul>
- * 两个版本里都<b>没有</b> {@code LayerSlashBlade} 这个类。
- *
- * <h2>这个 mixin 的作用</h2>
- * 它是一份「上游日后把这批渲染方法上移到父类」的保险：届时不改代码即可自动接管。
- * 因此 {@code require = 0} 是刻意为之 —— 目标不存在时必须安静跳过，而不是加载失败。
- *
- * <h2>代价（务请注意）</h2>
- * 这也意味着上游真的换了位置、或改了方法名时，{@code LayerMainBladeMixin} 不会报错，
- * 修复会安静失效，只在开启 DEBUG 时留下一行日志。排查「副手没装备却显示待机刀」
- * 这类问题时，先确认日志里到底注上了哪个目标类。
- *
- * @see HotbarStandbyBlade#logHookedOnce(String)
+ * 只截断 SlashBlade「把快捷栏第 1 格的刀当作待机刀渲染」这一条路径（且仅针对本模组的刀）。
+ * <p>
+ * {@code renderOffhandItem} 在副手为空时会转而调用 {@code renderHotbarItem}，把快捷栏第 0 格
+ * 的刀渲染成待机刀——于是主手换成其他道具后，布景之杖看起来像装备到了副手，实际并未装备。
+ * 这里在 HEAD 处取消该渲染。
+ * <p>
+ * 真正放进副手的刀走的是 {@code renderStandbyBlade(offhandStack)} 分支，不受本 mixin 影响，
+ * 因此副手装备时仍会正常显示。
+ * <p>
+ * <b>为什么目标类写成字符串而不是 {@code LayerSlashBlade.class}</b>：拔刀剑 2.0.8 起把这批渲染方法
+ * 从 {@code LayerMainBlade} 上移到了父类 {@code LayerSlashBlade}（2.0.8 / 2.1.9 均已确认）。
+ * 写字符串就可以在<b>不把 {@code LayerSlashBlade} 加进编译依赖</b>的前提下注入它——
+ * 本模组的编译前置仍是最低的 2.0.2，那个版本里根本没有这个类，写类字面量会直接编译失败。
+ * <p>
+ * {@code @Pseudo} 与 {@code require = 0} 是配套的软目标声明：2.0.7 及更早的拔刀剑里没有
+ * {@code LayerSlashBlade} 这个类，没有 {@code @Pseudo} 时 mixin 会直接报缺失目标；
+ * 类缺失时本 mixin 被跳过，改由 {@link LayerMainBladeMixin} 生效。两者只会有一个真正命中。
+ * <p>
+ * {@code remap = false}：SlashBlade 是模组类，其类名与方法名不需要（也不应该）经过混淆重映射。
+ * <p>
+ * {@code require = 0}：目标方法在未来版本里再次搬家时，本 mixin 安静失效而不是让游戏报
+ * {@code InvalidInjectionException}（这正是 2.1.9 上玩家遇到的报错）。代价是失效无日志，
+ * 因此注入成功时由 {@link HotbarStandbyBlade#logHookedOnce} 打一行 DEBUG 便于排查。
  */
 @Pseudo
 @Mixin(targets = "mods.flammpfeil.slashblade.client.renderer.layers.LayerSlashBlade", remap = false)

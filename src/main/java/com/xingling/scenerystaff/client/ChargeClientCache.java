@@ -16,23 +16,32 @@ public final class ChargeClientCache {
 
     private static volatile int domainCharge;
     private static volatile int giantSwordCharge;
+    private static volatile int defierThornCharge;
 
     private ChargeClientCache() {
     }
 
-    public static void accept(int domain, int giantSword) {
+    public static void accept(int domain, int giantSword, int defierThorn) {
         domainCharge = domain;
         giantSwordCharge = giantSword;
+        defierThornCharge = defierThorn;
     }
 
     /** 取某条充能在客户端的镜像值 */
     public static int get(SaCharge.Charge charge) {
-        return charge == SaCharge.DOMAIN ? domainCharge : giantSwordCharge;
+        if (charge == SaCharge.DOMAIN) {
+            return domainCharge;
+        }
+        if (charge == SaCharge.GIANT_SWORD) {
+            return giantSwordCharge;
+        }
+        return defierThornCharge;
     }
 
     /** 换存档 / 断线时清空 */
     public static void clear() {
         domainCharge = 0;
         giantSwordCharge = 0;
+        defierThornCharge = 0;
     }
 }

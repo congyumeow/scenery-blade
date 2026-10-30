@@ -1,0 +1,42 @@
+{
+  "type": "slashblade:shaped_blade",
+  "blade": "scenerystaff:cartethyia",
+  "category": "equipment",
+  "key": {
+    "A": {
+      "type": "slashblade:blade",
+      "item": "slashblade:slashblade",
+      "request": {
+        "kill": 333,
+        "name": "scenerystaff:aoter"
+      }
+    },
+    "B": {
+      "type": "slashblade:blade",
+      "item": "slashblade:slashblade",
+      "request": {
+        "kill": 333,
+        "name": "scenerystaff:tyrfing"
+      }
+    },
+    "C": {
+      "type": "slashblade:blade",
+      "item": "slashblade:slashblade",
+      "request": {
+        "kill": 333,
+        "name": "scenerystaff:hegeli"
+      }
+    },
+    "E": {
+      "item": "scenerystaff:cartethyia_waveband"
+    }
+  },
+  "pattern": [
+    " E ",
+    "ABC"
+  ],
+  "result": {
+    "item": "slashblade:slashblade"
+  },
+  "show_notification": true
+}

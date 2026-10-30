@@ -4,6 +4,21 @@
       "scenerystaff:aemeath"
     ]
   },
+  "cartethyia1": {
+    "sounds": [
+      "scenerystaff:cartethyia1"
+    ]
+  },
+  "cartethyia2": {
+    "sounds": [
+      "scenerystaff:cartethyia2"
+    ]
+  },
+  "cartethyia3": {
+    "sounds": [
+      "scenerystaff:cartethyia3"
+    ]
+  },
   "denia1": {
     "sounds": [
       "scenerystaff:denia1"

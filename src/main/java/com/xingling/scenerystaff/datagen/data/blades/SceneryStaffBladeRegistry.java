@@ -11,11 +11,10 @@ import mods.flammpfeil.slashblade.registry.slashblade.EnchantmentDefinition;
 import mods.flammpfeil.slashblade.registry.slashblade.PropertiesDefinition;
 import mods.flammpfeil.slashblade.registry.slashblade.RenderDefinition;
 import mods.flammpfeil.slashblade.registry.slashblade.SlashBladeDefinition;
-import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.data.worldgen.BootstapContext;
-import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.item.enchantment.Enchantments;
 
@@ -46,7 +45,7 @@ public class SceneryStaffBladeRegistry {
      * 启明星线的下位刀：启明星。
      * <p>
      * 与上位刀「永远的启明星」共用同一套模型（{@code qimingxing.obj}），但用原先那张贴图
-     * {@code qimingxing_base.png}（上位刀改用 {@code qimingxing_extra.png}）；
+     * {@code qimingxing.png}（上位刀改用 {@code qimingxing_extra.png}）；
      * 数值、剑技、附魔都按「残景之杖之于布景之杖」的同一比例下调，作为前中期过渡刀。
      * <p>
      * ID 用 {@code qimingxing_worn}（对应 {@code scenery_staff_worn} 的命名习惯），
@@ -70,9 +69,26 @@ public class SceneryStaffBladeRegistry {
             ResourceKey.create(SlashBladeDefinition.REGISTRY_KEY, SceneryIds.CHAOXI);
 
     /**
-     * 1.20.1 上数据生成上下文的接口名是 {@code BootstapContext}（Forge/Minecraft 的拼写笔误，
-     * 1.21 才被修正为 {@code BootstrapContext}），因此这里必须用旧名 + {@code lookup(...)}。
+     * 毕业刀：不屈命定之冠（卡提希娅）。
+     * <p>
+     * 数值与附魔对齐另外两把毕业刀；不挂特殊效果；剑技为内置的「次元斩」。
+     * 目前没有对应的回音频段，因此不接受铁砧强化。
      */
+    public static final ResourceKey<SlashBladeDefinition> CARTETHYIA =
+            ResourceKey.create(SlashBladeDefinition.REGISTRY_KEY, SceneryIds.CARTETHYIA);
+
+    /** 不屈命定之冠的下位刀：奥特尔*/
+    public static final ResourceKey<SlashBladeDefinition> AOTER =
+            ResourceKey.create(SlashBladeDefinition.REGISTRY_KEY, SceneryIds.AOTER);
+
+    /** 不屈命定之冠的下位刀：提尔芬*/
+    public static final ResourceKey<SlashBladeDefinition> TYRFING =
+            ResourceKey.create(SlashBladeDefinition.REGISTRY_KEY, SceneryIds.TYRFING);
+
+    /** 不屈命定之冠的下位刀：赫格利*/
+    public static final ResourceKey<SlashBladeDefinition> HEGELI =
+            ResourceKey.create(SlashBladeDefinition.REGISTRY_KEY, SceneryIds.HEGELI);
+
     public static void registerAll(BootstapContext<SlashBladeDefinition> bootstrap) {
         bootstrap.register(
                 SCENERY_STAFF,
@@ -82,7 +98,7 @@ public class SceneryStaffBladeRegistry {
                         RenderDefinition.Builder.newInstance()
                                 .textureName(SceneryStaff.prefix("model/scenery/scenery_staff.png"))
                                 .modelName(SceneryStaff.prefix("model/scenery/scenery.obj"))
-                                .effectColor(0xAABBCC)
+                                .effectColor(0xDCB0F0)   // 浅紫偏粉
                                 .build(),
                         PropertiesDefinition.Builder.newInstance()
                                 .defaultSwordType(List.of(SwordType.BEWITCHED))
@@ -138,11 +154,11 @@ public class SceneryStaffBladeRegistry {
                         RenderDefinition.Builder.newInstance()
                                 .textureName(SceneryStaff.prefix("model/qimingxing/qimingxing_extra.png"))
                                 .modelName(SceneryStaff.prefix("model/qimingxing/qimingxing.obj"))
-                                .effectColor(0xC8E8FF)
+                                .effectColor(0xFFA8D8)   // 粉色
                                 .build(),
                         PropertiesDefinition.Builder.newInstance()
                                 .defaultSwordType(List.of(SwordType.BEWITCHED))
-                                .baseAttackModifier(15)
+                                .baseAttackModifier(20)
                                 .maxDamage(350)
                                 .addSpecialEffect(SERegistry.POLYMERIZATION.getId())   // 永远的启明星命中同样累积聚爆层数（并享有 13 层上限）
                                 .slashArtsType(SARegistry.GIANT_SWORD.getId())        // 剑技：永远的启明星（召唤巨剑）
@@ -208,14 +224,112 @@ public class SceneryStaffBladeRegistry {
                         ItemTabRegistry.SCENERY_TAB.getId()
                 )
         );
+
+        // 毕业刀：不屈命定之冠（卡提希娅）
+        bootstrap.register(
+                CARTETHYIA,
+                new SlashBladeDefinition(
+                        SceneryIds.CARTETHYIA,
+                        RenderDefinition.Builder.newInstance()
+                                .textureName(SceneryStaff.prefix("model/cartethyia/cartethyia.png"))
+                                .modelName(SceneryStaff.prefix("model/cartethyia/cartethyia.obj"))
+                                .effectColor(0x9BE8A8)   // 浅绿刀光
+                                .build(),
+                        PropertiesDefinition.Builder.newInstance()
+                                .defaultSwordType(List.of(SwordType.BEWITCHED))
+                                .baseAttackModifier(20)
+                                .maxDamage(500)
+                                .slashArtsType(SARegistry.DEFIER_THORN.getId())          // 自由骑士之舞
+                                .build(),
+                        List.of(
+                                new EnchantmentDefinition(idOf(Enchantments.POWER_ARROWS), 10),
+                                new EnchantmentDefinition(idOf(Enchantments.UNBREAKING), 3),
+                                new EnchantmentDefinition(idOf(Enchantments.MOB_LOOTING), 7),
+                                new EnchantmentDefinition(idOf(Enchantments.SMITE), 10),
+                                new EnchantmentDefinition(idOf(Enchantments.SHARPNESS), 5)
+                        ),
+                        ItemTabRegistry.SCENERY_TAB.getId()
+                )
+        );
+
+        // 下位刀：奥特尔
+        bootstrap.register(
+                AOTER,
+                new SlashBladeDefinition(
+                        SceneryIds.AOTER,
+                        RenderDefinition.Builder.newInstance()
+                                .textureName(SceneryStaff.prefix("model/aoter/aoter.png"))
+                                .modelName(SceneryStaff.prefix("model/chaoxi/chaoxi.obj"))
+                                .effectColor(0x4A7FD4)
+                                .build(),
+                        PropertiesDefinition.Builder.newInstance()
+                                .defaultSwordType(List.of(SwordType.BEWITCHED))
+                                .baseAttackModifier(12)
+                                .maxDamage(300)
+                                .slashArtsType(SlashArtsRegistry.WAVE_EDGE.getId())
+                                .build(),
+                        List.of(
+                                new EnchantmentDefinition(idOf(Enchantments.POWER_ARROWS), 5),
+                                new EnchantmentDefinition(idOf(Enchantments.UNBREAKING), 3),
+                                new EnchantmentDefinition(idOf(Enchantments.SHARPNESS), 3)
+                        ),
+                        ItemTabRegistry.SCENERY_TAB.getId()
+                )
+        );
+
+        // 下位刀：提尔芬
+        bootstrap.register(
+                TYRFING,
+                new SlashBladeDefinition(
+                        SceneryIds.TYRFING,
+                        RenderDefinition.Builder.newInstance()
+                                .textureName(SceneryStaff.prefix("model/tyrfing/tyrfing.png"))
+                                .modelName(SceneryStaff.prefix("model/chaoxi/chaoxi.obj"))
+                                .effectColor(0xC8CCD4)
+                                .build(),
+                        PropertiesDefinition.Builder.newInstance()
+                                .defaultSwordType(List.of(SwordType.BEWITCHED))
+                                .baseAttackModifier(12)
+                                .maxDamage(300)
+                                .slashArtsType(SlashArtsRegistry.WAVE_EDGE.getId())
+                                .build(),
+                        List.of(
+                                new EnchantmentDefinition(idOf(Enchantments.POWER_ARROWS), 5),
+                                new EnchantmentDefinition(idOf(Enchantments.UNBREAKING), 3),
+                                new EnchantmentDefinition(idOf(Enchantments.SHARPNESS), 3)
+                        ),
+                        ItemTabRegistry.SCENERY_TAB.getId()
+                )
+        );
+
+        // 下位刀：赫格利
+        bootstrap.register(
+                HEGELI,
+                new SlashBladeDefinition(
+                        SceneryIds.HEGELI,
+                        RenderDefinition.Builder.newInstance()
+                                .textureName(SceneryStaff.prefix("model/hegeli/hegeli.png"))
+                                .modelName(SceneryStaff.prefix("model/chaoxi/chaoxi.obj"))
+                                .effectColor(0x8E1B1B)
+                                .build(),
+                        PropertiesDefinition.Builder.newInstance()
+                                .defaultSwordType(List.of(SwordType.BEWITCHED))
+                                .baseAttackModifier(12)
+                                .maxDamage(300)
+                                .slashArtsType(SlashArtsRegistry.WAVE_EDGE.getId())
+                                .build(),
+                        List.of(
+                                new EnchantmentDefinition(idOf(Enchantments.POWER_ARROWS), 5),
+                                new EnchantmentDefinition(idOf(Enchantments.UNBREAKING), 3),
+                                new EnchantmentDefinition(idOf(Enchantments.SHARPNESS), 3)
+                        ),
+                        ItemTabRegistry.SCENERY_TAB.getId()
+                )
+        );
     }
 
-    /**
-     * 1.20.1 上 {@code Enchantments.XXX} 是 {@link Enchantment} 实例（不是 ResourceKey），
-     * 而 SlashBlade 的 {@code EnchantmentDefinition} 接收附魔的 {@code ResourceLocation}
-     * （1.21 才换成 Holder / ResourceKey），所以这里从注册表反查它的 ID。
-     */
+    /** 1.20.1 的 EnchantmentDefinition 收 ResourceLocation；这里从注册表取回注册名 */
     private static ResourceLocation idOf(Enchantment enchantment) {
-        return BuiltInRegistries.ENCHANTMENT.getKey(enchantment);
+        return net.minecraftforge.registries.ForgeRegistries.ENCHANTMENTS.getKey(enchantment);
     }
 }

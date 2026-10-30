@@ -114,6 +114,74 @@ public class SceneryStaffRecipeProvider extends RecipeProvider {
                 .unlockedBy("has_item", has(SlashBladeItems.SLASHBLADE.get()))
                 .save(output);
 
+        // 不屈命定之冠线的下位刀：奥特尔（以基础刀「潮汐」为胚）
+        SlashBladeShapedRecipeBuilder.shaped(SceneryStaffBladeRegistry.AOTER.location())
+                .pattern(" A ")
+                .pattern("BXC")
+                .pattern(" D ")
+                .define('X', SlashBladeIngredient.of(RequestDefinition.Builder.newInstance()
+                        .name(SceneryIds.CHAOXI)
+                        .killCount(100)
+                        .build()))
+                .define('A', Items.LAPIS_LAZULI)
+                .define('B', Items.GOLD_INGOT)
+                .define('C', Items.DIAMOND)
+                .define('D', Items.IRON_INGOT)
+                .unlockedBy("has_item", has(SlashBladeItems.SLASHBLADE.get()))
+                .save(output);
+
+        // 不屈命定之冠线的下位刀：提尔芬
+        SlashBladeShapedRecipeBuilder.shaped(SceneryStaffBladeRegistry.TYRFING.location())
+                .pattern(" A ")
+                .pattern("BXC")
+                .pattern(" D ")
+                .define('X', SlashBladeIngredient.of(RequestDefinition.Builder.newInstance()
+                        .name(SceneryIds.CHAOXI)
+                        .killCount(100)
+                        .build()))
+                .define('A', Items.AMETHYST_SHARD)
+                .define('B', Items.IRON_INGOT)
+                .define('C', Items.DIAMOND)
+                .define('D', Items.IRON_BLOCK)
+                .unlockedBy("has_item", has(SlashBladeItems.SLASHBLADE.get()))
+                .save(output);
+
+        // 不屈命定之冠线的下位刀：赫格利
+        SlashBladeShapedRecipeBuilder.shaped(SceneryStaffBladeRegistry.HEGELI.location())
+                .pattern(" A ")
+                .pattern("BXC")
+                .pattern(" D ")
+                .define('X', SlashBladeIngredient.of(RequestDefinition.Builder.newInstance()
+                        .name(SceneryIds.CHAOXI)
+                        .killCount(100)
+                        .build()))
+                .define('A', Items.REDSTONE_BLOCK)
+                .define('B', Items.OBSIDIAN)
+                .define('C', Items.NETHERITE_SCRAP)
+                .define('D', Items.BLAZE_POWDER)
+                .unlockedBy("has_item", has(SlashBladeItems.SLASHBLADE.get()))
+                .save(output);
+
+        // 毕业刀：不屈命定之冠 —— 由三把下位刀合成
+        SlashBladeShapedRecipeBuilder.shaped(SceneryStaffBladeRegistry.CARTETHYIA.location())
+                .pattern(" E ")
+                .pattern("ABC")
+                .define('E', ItemRegistry.CARTETHYIA_WAVEBAND.get())   // 卡提希娅的回音频段（中央上方）
+                .define('A', SlashBladeIngredient.of(RequestDefinition.Builder.newInstance()
+                        .name(SceneryIds.AOTER)
+                        .killCount(333)
+                        .build()))
+                .define('B', SlashBladeIngredient.of(RequestDefinition.Builder.newInstance()
+                        .name(SceneryIds.TYRFING)
+                        .killCount(333)
+                        .build()))
+                .define('C', SlashBladeIngredient.of(RequestDefinition.Builder.newInstance()
+                        .name(SceneryIds.HEGELI)
+                        .killCount(333)
+                        .build()))
+                .unlockedBy("has_item", has(SlashBladeItems.SLASHBLADE.get()))
+                .save(output);
+
         // 爱弥斯的护身符：3 线（上中 + 中左 + 中右）+ 底部中间 1 钻石
         ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ItemRegistry.HUSHENFU.get())
                 .pattern(" A ")
@@ -151,6 +219,18 @@ public class SceneryStaffRecipeProvider extends RecipeProvider {
                 .define('A', ItemRegistry.XUZHI.get())
                 .define('B', ItemRegistry.HUSHENFU.get())
                 .unlockedBy("has_hushenfu", has(ItemRegistry.HUSHENFU.get()))
+                .save(output);
+
+        // 卡提希娅的回音频段：蒲公英 + 虚质 + 虞美人，中央一颗钻石
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ItemRegistry.CARTETHYIA_WAVEBAND.get())
+                .pattern("ABA")
+                .pattern("BDB")
+                .pattern("CBC")
+                .define('A', Items.DANDELION)
+                .define('B', ItemRegistry.XUZHI.get())
+                .define('C', Items.POPPY)
+                .define('D', Items.DIAMOND)
+                .unlockedBy("has_xuzhi", has(ItemRegistry.XUZHI.get()))
                 .save(output);
 
         // 达妮娅的生日蛋糕

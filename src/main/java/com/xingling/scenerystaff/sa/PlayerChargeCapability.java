@@ -38,6 +38,7 @@ public final class PlayerChargeCapability {
 
     private static final String TAG_DOMAIN = "DomainCharge";
     private static final String TAG_GIANT_SWORD = "GiantSwordCharge";
+    private static final String TAG_DEFIER_THORN = "DefierThornCharge";
 
     private PlayerChargeCapability() {
     }
@@ -83,11 +84,12 @@ public final class PlayerChargeCapability {
 
     // ------------------------------------------------------------------ 数据本体
 
-    /** 两条充能值（0 ~ cost，读的时候按上限钳制） */
+    /** 各条充能值（0 ~ cost，读的时候按上限钳制） */
     public static final class ChargeData {
 
         private int domainCharge;
         private int giantSwordCharge;
+        private int defierThornCharge;
 
         public int getDomainCharge() {
             return this.domainCharge;
@@ -105,9 +107,18 @@ public final class PlayerChargeCapability {
             this.giantSwordCharge = value;
         }
 
+        public int getDefierThornCharge() {
+            return this.defierThornCharge;
+        }
+
+        public void setDefierThornCharge(int value) {
+            this.defierThornCharge = value;
+        }
+
         public void copyFrom(ChargeData other) {
             this.domainCharge = other.domainCharge;
             this.giantSwordCharge = other.giantSwordCharge;
+            this.defierThornCharge = other.defierThornCharge;
         }
     }
 
@@ -130,6 +141,7 @@ public final class PlayerChargeCapability {
             CompoundTag tag = new CompoundTag();
             tag.putInt(TAG_DOMAIN, this.data.getDomainCharge());
             tag.putInt(TAG_GIANT_SWORD, this.data.getGiantSwordCharge());
+            tag.putInt(TAG_DEFIER_THORN, this.data.getDefierThornCharge());
             return tag;
         }
 
@@ -137,6 +149,7 @@ public final class PlayerChargeCapability {
         public void deserializeNBT(CompoundTag tag) {
             this.data.setDomainCharge(tag.getInt(TAG_DOMAIN));
             this.data.setGiantSwordCharge(tag.getInt(TAG_GIANT_SWORD));
+            this.data.setDefierThornCharge(tag.getInt(TAG_DEFIER_THORN));
         }
 
         public void invalidate() {

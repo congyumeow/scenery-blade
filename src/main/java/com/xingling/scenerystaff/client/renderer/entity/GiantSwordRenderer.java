@@ -54,12 +54,12 @@ public class GiantSwordRenderer extends EntityRenderer<GiantSwordEntity> {
     /** 目标剑长（格）：与实体碰撞箱同源，见 {@link GiantSwordEntity#SWORD_LENGTH} */
     private static final float TARGET_LENGTH = GiantSwordEntity.SWORD_LENGTH;
     /** 模型长轴（X 轴）跨度：实测 -266.34 .. 68.03，合计 334.37 */
-    private static final float MODEL_LENGTH = 334.37F;
+    private static final float MODEL_LENGTH = 362.42F;
     /** 缩放系数 ≈ 0.0239（约 SlashBlade 默认刀身缩放 0.0075 的 3.2 倍） */
     private static final float SCALE = TARGET_LENGTH / MODEL_LENGTH;
 
     /** 剑尖距模型原点的距离（沿 -X，单位与模型一致） */
-    private static final float MODEL_TIP_OFFSET = 266.34F;
+    private static final float MODEL_TIP_OFFSET = 290.13F;
     /** 抬高量（格）：把剑尖从实体位置下方拨回实体位置 */
     private static final float TIP_LIFT = MODEL_TIP_OFFSET * SCALE;
 

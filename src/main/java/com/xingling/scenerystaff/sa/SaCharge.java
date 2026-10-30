@@ -20,7 +20,7 @@ import java.util.Map;
 /**
  * SA 充能（共鸣解放式）。
  * <p>
- * 两把最终刀的剑技不再「冷却到点就能放」，而是各自攒一条充能：攒满才能放，放完清空。
+ * 各把终盘刀的剑技不再「冷却到点就能放」，而是各自攒一条充能：攒满才能放，放完清空。
  * 未攒满时由 {@link SaChargeGate} 把剑技换成内置幻影刃。
  * <p>
  * 充能<b>只由战斗行为累积</b>——命中 {@link #GAIN_ON_HIT} / 击杀 {@link #GAIN_ON_KILL} /
@@ -41,7 +41,8 @@ public final class SaCharge {
     /** 各 SA 的释放所需充能（按 SA 注册 ID 配置） */
     private static final Map<ResourceLocation, Integer> COST_BY_SA = Map.of(
             SARegistry.EROSION_DOMAIN.getId(), 125,
-            SARegistry.GIANT_SWORD.getId(), 125);
+            SARegistry.GIANT_SWORD.getId(), 125,
+            SARegistry.DEFIER_THORN.getId(), 125);
 
     /** 命中敌人 */
     private static final int GAIN_ON_HIT = 3;       // 2.4%：约 42 次命中充满
@@ -54,6 +55,8 @@ public final class SaCharge {
     private static final ResourceLocation DENIA_ICON = SceneryStaff.prefix("textures/gui/sa_denia.png");
     /** 巨剑图标（同上） */
     private static final ResourceLocation AEMEATH_ICON = SceneryStaff.prefix("textures/gui/sa_aemeath.png");
+    /** 自由骑士之舞图标（独立资源，便于以后单独替换成专属美术） */
+    private static final ResourceLocation CARTETHYIA_ICON = SceneryStaff.prefix("textures/gui/sa_cartethyia.png");
 
     /** 蚀域（布景之杖） */
     public static final Charge DOMAIN = new Charge(SARegistry.EROSION_DOMAIN.getId(),
@@ -62,6 +65,13 @@ public final class SaCharge {
     /** 巨剑（启明星） */
     public static final Charge GIANT_SWORD = new Charge(SARegistry.GIANT_SWORD.getId(),
             "message.scenerystaff.giant_sword_charging", AEMEATH_ICON, 0x9FD8FF);
+
+    /** 自由骑士之舞（不屈命定之冠） */
+    public static final Charge DEFIER_THORN = new Charge(SARegistry.DEFIER_THORN.getId(),
+            "message.scenerystaff.defier_thorn_charging", CARTETHYIA_ICON, 0x9BE8A8);
+
+    /** 全部充能条。新增一条充能＝在这里加一行，读写/HUD/同步跟着变 */
+    private static final Charge[] ALL = { DOMAIN, GIANT_SWORD, DEFIER_THORN };
 
     private SaCharge() {
     }
@@ -92,11 +102,10 @@ public final class SaCharge {
 
     /** 按 SA 注册 ID 找对应的充能条；不是本模组的 SA 时返回 {@code null} */
     public static Charge forSa(ResourceLocation saId) {
-        if (DOMAIN.saId().equals(saId)) {
-            return DOMAIN;
-        }
-        if (GIANT_SWORD.saId().equals(saId)) {
-            return GIANT_SWORD;
+        for (Charge charge : ALL) {
+            if (charge.saId().equals(saId)) {
+                return charge;
+            }
         }
         return null;
     }
@@ -110,7 +119,15 @@ public final class SaCharge {
 
     private static int rawGet(Player player, Charge charge) {
         return PlayerChargeCapability.get(player)
-                .map(data -> charge == DOMAIN ? data.getDomainCharge() : data.getGiantSwordCharge())
+                .map(data -> {
+                    if (charge == DOMAIN) {
+                        return data.getDomainCharge();
+                    }
+                    if (charge == GIANT_SWORD) {
+                        return data.getGiantSwordCharge();
+                    }
+                    return data.getDefierThornCharge();
+                })
                 .orElse(0);
     }
 
@@ -118,8 +135,10 @@ public final class SaCharge {
         PlayerChargeCapability.get(player).ifPresent(data -> {
             if (charge == DOMAIN) {
                 data.setDomainCharge(value);
-            } else {
+            } else if (charge == GIANT_SWORD) {
                 data.setGiantSwordCharge(value);
+            } else {
+                data.setDefierThornCharge(value);
             }
         });
     }
@@ -161,17 +180,18 @@ public final class SaCharge {
         push(player);
     }
 
-    /** 把两条充能值同步给该玩家本人 */
+    /** 把全部充能值同步给该玩家本人 */
     public static void push(Player player) {
         if (player instanceof ServerPlayer serverPlayer) {
             SyncChargeMessage.syncTo(serverPlayer,
                     Mth.clamp(rawGet(player, DOMAIN), 0, DOMAIN.cost()),
-                    Mth.clamp(rawGet(player, GIANT_SWORD), 0, GIANT_SWORD.cost()));
+                    Mth.clamp(rawGet(player, GIANT_SWORD), 0, GIANT_SWORD.cost()),
+                    Mth.clamp(rawGet(player, DEFIER_THORN), 0, DEFIER_THORN.cost()));
         }
     }
 
     /**
-     * 取当前主手刀对应的充能条；不是本模组的两把最终刀时返回 {@code null}。
+     * 取当前主手刀对应的充能条；不是本模组的终盘刀时返回 {@code null}。
      * <p>
      * 充能只涨在「手上正拿着的那把」上——与鸣潮按角色各自攒能量一致。
      */
@@ -182,6 +202,9 @@ public final class SaCharge {
         }
         if (SceneryBlades.isQimingxing(stack)) {
             return GIANT_SWORD;
+        }
+        if (SceneryBlades.isCartethyia(stack)) {
+            return DEFIER_THORN;
         }
         return null;
     }

@@ -25,4 +25,14 @@ public class BlockRegistry {
                             .strength(0.5F)
                             .sound(SoundType.WOOL)
                             .pushReaction(PushReaction.DESTROY)));
+
+    /**
+     * 新维度的地基方块「虚质方块」。
+     */
+    public static final RegistryObject<Block> XUZHI_BLOCK =
+            REGISTRY.register("xuzhi_block", () -> new Block(
+                    BlockBehaviour.Properties.of()
+                            .strength(-1.0F, 3600000.0F)
+                            .sound(SoundType.AMETHYST)
+                            .pushReaction(PushReaction.BLOCK)));
 }

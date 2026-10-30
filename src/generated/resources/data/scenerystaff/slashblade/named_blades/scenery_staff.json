@@ -37,7 +37,7 @@
   "render": {
     "carry_type": "default",
     "model": "scenerystaff:model/scenery/scenery.obj",
-    "summon_sword_color": 11189196,
+    "summon_sword_color": 14463216,
     "texture": "scenerystaff:model/scenery/scenery_staff.png"
   }
 }

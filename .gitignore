@@ -31,4 +31,5 @@ Thumbs.db
 
 # datagen 缓存（与 master 分支一致）
 /src/generated/resources/.cache/
+docs/
 
