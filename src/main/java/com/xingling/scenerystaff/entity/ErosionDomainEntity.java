@@ -134,9 +134,7 @@ public class ErosionDomainEntity extends Entity {
         //  - 当前以玩家为目标、或最近被玩家伤害的生物
         List<LivingEntity> targets = serverLevel.getEntitiesOfClass(LivingEntity.class, aabb,
                 e -> e != owner && e.isAlive()
-                        && (e instanceof Enemy
-                            || (e instanceof NeutralMob nm && nm.isAngryAt(owner))
-                            || (e instanceof Mob mob && mob.getTarget() == owner))
+                        && TargetFilters.isAbilityTarget(e, owner)
                         && e.distanceToSqr(this) <= RADIUS * RADIUS);
 
         // 归属到领域主人：用原版「间接魔法」伤害（与唤魔者尖牙同一写法），

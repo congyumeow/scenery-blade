@@ -8,8 +8,10 @@ import com.xingling.scenerystaff.registry.SoundRegistry;
 import mods.flammpfeil.slashblade.init.DefaultResources;
 import mods.flammpfeil.slashblade.registry.combo.ComboState;
 import mods.flammpfeil.slashblade.slasharts.SlashArts;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvent;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 
@@ -23,6 +25,15 @@ import java.util.Random;
  */
 public class ErosionDomainSA extends SlashArts {
     private static final Random RANDOM = new Random();
+
+    /**
+     * 玩家持久化数据里记录「自己上一个蚀域」的 UUID。
+     * <p>
+     * 用 UUID 而不是「扫描附近实体」来做唯一性判定：玩家可能已经走出很远，
+     * 扫描半径覆盖不到旧领域；而 UUID 存在玩家身上，与领域实体的距离无关。
+     * 领域到期被移除后 {@code getEntity} 会返回 {@code null}，此时自然什么也不做。
+     */
+    private static final String KEY_LAST_DOMAIN = "scenerystaff_last_erosion_domain";
 
     public ErosionDomainSA() {
         // 普通/完美变式统一进入 erosion_domain 连击状态
@@ -56,6 +67,15 @@ public class ErosionDomainSA extends SlashArts {
         if (!(user.level() instanceof ServerLevel serverLevel)) return;
         if (!(user instanceof Player player)) return;
 
+        // 同一时间只允许存在一个蚀域：先移除该玩家上一个仍在生效的领域（新替旧）
+        CompoundTag data = player.getPersistentData();
+        if (data.hasUUID(KEY_LAST_DOMAIN)) {
+            Entity previous = serverLevel.getEntity(data.getUUID(KEY_LAST_DOMAIN));
+            if (previous instanceof ErosionDomainEntity old && !old.isRemoved()) {
+                old.discard();
+            }
+        }
+
         // 播放随机音效
         SoundEvent[] sounds = {
                 SoundRegistry.DENIA1.get(),
@@ -72,5 +92,6 @@ public class ErosionDomainSA extends SlashArts {
         domain.setOwner(player);
         domain.setDuration(ErosionDomainEntity.DURATION_TICKS); // 30 秒 (20 ticks/sec)
         serverLevel.addFreshEntity(domain);
+        data.putUUID(KEY_LAST_DOMAIN, domain.getUUID());
     }
 }

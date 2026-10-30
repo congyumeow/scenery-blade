@@ -68,6 +68,27 @@ public class SceneryStaffBladeRegistry {
     public static final ResourceKey<SlashBladeDefinition> CHAOXI =
             ResourceKey.create(SlashBladeDefinition.REGISTRY_KEY, SceneryIds.CHAOXI);
 
+    /**
+     * 毕业刀：不屈命定之冠（卡提希娅）。
+     * <p>
+     * 数值与附魔对齐另外两把毕业刀；不挂特殊效果；剑技为内置的「次元斩」。
+     * 目前没有对应的回音频段，因此不接受铁砧强化。
+     */
+    public static final ResourceKey<SlashBladeDefinition> CARTETHYIA =
+            ResourceKey.create(SlashBladeDefinition.REGISTRY_KEY, SceneryIds.CARTETHYIA);
+
+    /** 不屈命定之冠的下位刀：奥特尔*/
+    public static final ResourceKey<SlashBladeDefinition> AOTER =
+            ResourceKey.create(SlashBladeDefinition.REGISTRY_KEY, SceneryIds.AOTER);
+
+    /** 不屈命定之冠的下位刀：提尔芬*/
+    public static final ResourceKey<SlashBladeDefinition> TYRFING =
+            ResourceKey.create(SlashBladeDefinition.REGISTRY_KEY, SceneryIds.TYRFING);
+
+    /** 不屈命定之冠的下位刀：赫格利*/
+    public static final ResourceKey<SlashBladeDefinition> HEGELI =
+            ResourceKey.create(SlashBladeDefinition.REGISTRY_KEY, SceneryIds.HEGELI);
+
     public static void registerAll(BootstrapContext<SlashBladeDefinition> bootstrap) {
         bootstrap.register(
                 SCENERY_STAFF,
@@ -77,7 +98,7 @@ public class SceneryStaffBladeRegistry {
                         RenderDefinition.Builder.newInstance()
                                 .textureName(SceneryStaff.prefix("model/scenery/scenery_staff.png"))
                                 .modelName(SceneryStaff.prefix("model/scenery/scenery.obj"))
-                                .effectColor(0xAABBCC)
+                                .effectColor(0xDCB0F0)   // 浅紫偏粉
                                 .build(),
                         PropertiesDefinition.Builder.newInstance()
                                 .defaultSwordType(List.of(SwordType.BEWITCHED))
@@ -133,11 +154,11 @@ public class SceneryStaffBladeRegistry {
                         RenderDefinition.Builder.newInstance()
                                 .textureName(SceneryStaff.prefix("model/qimingxing/qimingxing_extra.png"))
                                 .modelName(SceneryStaff.prefix("model/qimingxing/qimingxing.obj"))
-                                .effectColor(0xC8E8FF)
+                                .effectColor(0xFFA8D8)   // 粉色
                                 .build(),
                         PropertiesDefinition.Builder.newInstance()
                                 .defaultSwordType(List.of(SwordType.BEWITCHED))
-                                .baseAttackModifier(15)
+                                .baseAttackModifier(20)
                                 .maxDamage(350)
                                 .addSpecialEffect(SERegistry.POLYMERIZATION.getId())   // 永远的启明星命中同样累积聚爆层数（并享有 13 层上限）
                                 .slashArtsType(SARegistry.GIANT_SWORD.getId())        // 剑技：永远的启明星（召唤巨剑）
@@ -199,6 +220,108 @@ public class SceneryStaffBladeRegistry {
                         List.of(
                                 new EnchantmentDefinition(getEnchantment(bootstrap, Enchantments.POWER), 2),
                                 new EnchantmentDefinition(getEnchantment(bootstrap, Enchantments.UNBREAKING), 3)
+                        ),
+                        ItemTabRegistry.SCENERY_TAB.getId()
+                )
+        );
+
+        // 毕业刀：不屈命定之冠（卡提希娅）
+        bootstrap.register(
+                CARTETHYIA,
+                new SlashBladeDefinition(
+                        SceneryIds.CARTETHYIA,
+                        RenderDefinition.Builder.newInstance()
+                                .textureName(SceneryStaff.prefix("model/cartethyia/cartethyia.png"))
+                                .modelName(SceneryStaff.prefix("model/cartethyia/cartethyia.obj"))
+                                .effectColor(0x9BE8A8)   // 浅绿刀光
+                                .build(),
+                        PropertiesDefinition.Builder.newInstance()
+                                .defaultSwordType(List.of(SwordType.BEWITCHED))
+                                .baseAttackModifier(20)
+                                .maxDamage(500)
+                                .slashArtsType(SARegistry.DEFIER_THORN.getId())          // 自由骑士之舞
+                                .build(),
+                        List.of(
+                                new EnchantmentDefinition(getEnchantment(bootstrap, Enchantments.POWER), 10),
+                                new EnchantmentDefinition(getEnchantment(bootstrap, Enchantments.UNBREAKING), 3),
+                                new EnchantmentDefinition(getEnchantment(bootstrap, Enchantments.LOOTING), 7),
+                                new EnchantmentDefinition(getEnchantment(bootstrap, Enchantments.SMITE), 10),
+                                new EnchantmentDefinition(getEnchantment(bootstrap, Enchantments.SHARPNESS), 5)
+                        ),
+                        ItemTabRegistry.SCENERY_TAB.getId()
+                )
+        );
+
+        // 下位刀：奥特尔
+        bootstrap.register(
+                AOTER,
+                new SlashBladeDefinition(
+                        SceneryIds.AOTER,
+                        RenderDefinition.Builder.newInstance()
+                                .textureName(SceneryStaff.prefix("model/aoter/aoter.png"))
+                                .modelName(SceneryStaff.prefix("model/chaoxi/chaoxi.obj"))
+                                .effectColor(0x4A7FD4)
+                                .build(),
+                        PropertiesDefinition.Builder.newInstance()
+                                .defaultSwordType(List.of(SwordType.BEWITCHED))
+                                .baseAttackModifier(12)
+                                .maxDamage(300)
+                                .slashArtsType(SlashArtsRegistry.WAVE_EDGE.getId())
+                                .build(),
+                        List.of(
+                                new EnchantmentDefinition(getEnchantment(bootstrap, Enchantments.POWER), 5),
+                                new EnchantmentDefinition(getEnchantment(bootstrap, Enchantments.UNBREAKING), 3),
+                                new EnchantmentDefinition(getEnchantment(bootstrap, Enchantments.SHARPNESS), 3)
+                        ),
+                        ItemTabRegistry.SCENERY_TAB.getId()
+                )
+        );
+
+        // 下位刀：提尔芬
+        bootstrap.register(
+                TYRFING,
+                new SlashBladeDefinition(
+                        SceneryIds.TYRFING,
+                        RenderDefinition.Builder.newInstance()
+                                .textureName(SceneryStaff.prefix("model/tyrfing/tyrfing.png"))
+                                .modelName(SceneryStaff.prefix("model/chaoxi/chaoxi.obj"))
+                                .effectColor(0xC8CCD4)
+                                .build(),
+                        PropertiesDefinition.Builder.newInstance()
+                                .defaultSwordType(List.of(SwordType.BEWITCHED))
+                                .baseAttackModifier(12)
+                                .maxDamage(300)
+                                .slashArtsType(SlashArtsRegistry.WAVE_EDGE.getId())
+                                .build(),
+                        List.of(
+                                new EnchantmentDefinition(getEnchantment(bootstrap, Enchantments.POWER), 5),
+                                new EnchantmentDefinition(getEnchantment(bootstrap, Enchantments.UNBREAKING), 3),
+                                new EnchantmentDefinition(getEnchantment(bootstrap, Enchantments.SHARPNESS), 3)
+                        ),
+                        ItemTabRegistry.SCENERY_TAB.getId()
+                )
+        );
+
+        // 下位刀：赫格利
+        bootstrap.register(
+                HEGELI,
+                new SlashBladeDefinition(
+                        SceneryIds.HEGELI,
+                        RenderDefinition.Builder.newInstance()
+                                .textureName(SceneryStaff.prefix("model/hegeli/hegeli.png"))
+                                .modelName(SceneryStaff.prefix("model/chaoxi/chaoxi.obj"))
+                                .effectColor(0x8E1B1B)
+                                .build(),
+                        PropertiesDefinition.Builder.newInstance()
+                                .defaultSwordType(List.of(SwordType.BEWITCHED))
+                                .baseAttackModifier(12)
+                                .maxDamage(300)
+                                .slashArtsType(SlashArtsRegistry.WAVE_EDGE.getId())
+                                .build(),
+                        List.of(
+                                new EnchantmentDefinition(getEnchantment(bootstrap, Enchantments.POWER), 5),
+                                new EnchantmentDefinition(getEnchantment(bootstrap, Enchantments.UNBREAKING), 3),
+                                new EnchantmentDefinition(getEnchantment(bootstrap, Enchantments.SHARPNESS), 3)
                         ),
                         ItemTabRegistry.SCENERY_TAB.getId()
                 )

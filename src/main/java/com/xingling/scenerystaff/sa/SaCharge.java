@@ -47,7 +47,8 @@ public final class SaCharge {
     /** 各 SA 的释放所需充能（按 SA 注册 ID 配置） */
     private static final Map<ResourceLocation, Integer> COST_BY_SA = Map.of(
             SARegistry.EROSION_DOMAIN.getId(), 125,
-            SARegistry.GIANT_SWORD.getId(), 125);
+            SARegistry.GIANT_SWORD.getId(), 125,
+            SARegistry.DEFIER_THORN.getId(), 125);
 
     /** 命中敌人 */
     private static final int GAIN_ON_HIT = 3;       // 2.4%：约 42 次命中充满
@@ -63,11 +64,16 @@ public final class SaCharge {
             register("domain_charge");
     private static final DeferredHolder<AttachmentType<?>, AttachmentType<Integer>> GIANT_SWORD_TYPE =
             register("giant_sword_charge");
+    private static final DeferredHolder<AttachmentType<?>, AttachmentType<Integer>> DEFIER_THORN_TYPE =
+            register("defier_thorn_charge");
 
     /** 蚀域图标（白色剪影，配色由 {@link Charge#color()} 决定） */
     private static final ResourceLocation DENIA_ICON = SceneryStaff.prefix("textures/gui/sa_denia.png");
     /** 巨剑图标（同上） */
     private static final ResourceLocation AEMEATH_ICON = SceneryStaff.prefix("textures/gui/sa_aemeath.png");
+
+    /** 自由骑士之舞图标（独立资源，便于以后单独替换成专属美术） */
+    private static final ResourceLocation CARTETHYIA_ICON = SceneryStaff.prefix("textures/gui/sa_cartethyia.png");
 
     /** 蚀域（布景之杖） */
     public static final Charge DOMAIN = new Charge(DOMAIN_TYPE, SARegistry.EROSION_DOMAIN.getId(),
@@ -76,6 +82,10 @@ public final class SaCharge {
     /** 巨剑（启明星） */
     public static final Charge GIANT_SWORD = new Charge(GIANT_SWORD_TYPE, SARegistry.GIANT_SWORD.getId(),
             "message.scenerystaff.giant_sword_charging", AEMEATH_ICON, 0x9FD8FF);
+
+    /** 自由骑士之舞（不屈命定之冠） */
+    public static final Charge DEFIER_THORN = new Charge(DEFIER_THORN_TYPE, SARegistry.DEFIER_THORN.getId(),
+            "message.scenerystaff.defier_thorn_charging", CARTETHYIA_ICON, 0x9BE8A8);
 
     private SaCharge() {
     }
@@ -123,6 +133,9 @@ public final class SaCharge {
         }
         if (GIANT_SWORD.saId().equals(saId)) {
             return GIANT_SWORD;
+        }
+        if (DEFIER_THORN.saId().equals(saId)) {
+            return DEFIER_THORN;
         }
         return null;
     }
@@ -180,6 +193,9 @@ public final class SaCharge {
         }
         if (SceneryBlades.isQimingxing(stack)) {
             return GIANT_SWORD;
+        }
+        if (SceneryBlades.isCartethyia(stack)) {
+            return DEFIER_THORN;
         }
         return null;
     }

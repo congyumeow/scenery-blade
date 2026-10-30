@@ -30,6 +30,7 @@ public class SceneryStaff {
         ItemRegistry.REGISTRY.register(modEventBus);
         ItemTabRegistry.REGISTRY.register(modEventBus);
         SERegistry.REGISTRY.register(modEventBus);
+        MobEffectRegistry.REGISTRY.register(modEventBus);
         SARegistry.REGISTRY.register(modEventBus);
         ComboStateRegistry.COMBO_STATE.register(modEventBus);
         EntityRegistry.REGISTRY.register(modEventBus);

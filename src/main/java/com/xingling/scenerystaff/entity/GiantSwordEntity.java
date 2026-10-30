@@ -145,9 +145,7 @@ public class GiantSwordEntity extends Entity {
         // 只打「当前会攻击玩家」的生物，与侵蚀领域保持一致的判定
         List<LivingEntity> targets = serverLevel.getEntitiesOfClass(LivingEntity.class, box,
                 e -> e != owner && e.isAlive()
-                        && (e instanceof Enemy
-                            || (e instanceof NeutralMob nm && owner != null && nm.isAngryAt(owner))
-                            || (e instanceof Mob mob && owner != null && mob.getTarget() == owner))
+                        && TargetFilters.isAbilityTarget(e, owner)
                         // 三维球面判定：水平与垂直一视同仁，斜对角不会因为落在方盒角上而被打到
                         && e.distanceToSqr(cx, cy, cz) <= radiusSq);
 

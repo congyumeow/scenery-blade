@@ -9,9 +9,11 @@ import io.redspace.ironsspellbooks.api.spells.ISpellContainer;
 import io.redspace.ironsspellbooks.api.spells.ISpellContainerMutable;
 import io.redspace.ironsspellbooks.api.spells.SpellData;
 import io.redspace.ironsspellbooks.registries.ComponentRegistry;
+import net.minecraft.core.Holder;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.EquipmentSlotGroup;
+import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -22,8 +24,8 @@ import net.neoforged.neoforge.event.entity.player.PlayerEvent;
 import net.neoforged.neoforge.event.tick.PlayerTickEvent;
 
 /**
- * 与「铁魔法」（Iron's Spells 'n Spellbooks）的联动：让本模组四把命名刀像法杖一样提供法术属性，
- * 并各自「自带」一发法术——布景之杖线为火焰箭，启明星线为烈焰冲锋。
+ * 与「铁魔法」（Iron's Spells 'n Spellbooks）的联动：让本模组各命名刀像法杖一样提供法术属性，
+ * 并各自「自带」一发法术——布景之杖线为火焰箭，启明星线为烈焰冲锋，不屈命定之冠线为闪电球。
  *
  * <h2>为什么这个类必须手动注册</h2>
  * 本类直接引用 {@code io.redspace.ironsspellbooks.*}。如果给它加 {@code @EventBusSubscriber}，
@@ -35,14 +37,12 @@ import net.neoforged.neoforge.event.tick.PlayerTickEvent;
  * <h2>三件事</h2>
  * <ol>
  *   <li><b>法杖属性</b>：{@code ItemAttributeModifierEvent} 按物品栈追加 4 条铁魔法属性
- *       （火焰法术强度 / 通用法术强度 / 法力回复 / 最大法力）。上位档
- *       （布景之杖 / 永远的启明星）数值翻倍，下位档（残景之杖 / 启明星）为基础值。
- *       事件里传进来的默认修饰符就是 SlashBlade 自己算的攻击力与攻速，我们只是追加，互不冲突。</li>
+ *       （<b>学派</b>法术强度 / 通用法术强度 / 法力回复 / 最大法力）。上位档数值翻倍，下位档为基础值。
+ *       学派法强跟着刀走：不屈命定之冠给<b>雷霆</b>法术强度，其余给<b>火焰</b>法术强度。</li>
  *   <li><b>制造时自带法术</b>：{@code ItemCraftedEvent} 里写入法术容器。</li>
  *   <li><b>兜底补齐</b>：{@code PlayerTickEvent.Post} 每秒扫一次背包，<b>只在容器里确实没有法术时</b>补写，
  *       以覆盖创造栏 / {@code /give} / 交易 / 拾取等非合成途径。</li>
  * </ol>
- *
  *
  * 同理，判断「容器里有没有法术」不能用 {@code isEmpty()}：它读的是 {@code activeSlots}，
  * 而 {@code create(...)} 造出来的容器该字段恒为 0，用它会永远判定为空、每秒重写一次。
@@ -52,7 +52,7 @@ import net.neoforged.neoforge.event.tick.PlayerTickEvent;
  * （且不是卷轴/法术书）就允许灌注，用卷轴把刀上的法术换掉；容器满时它会退回到第 0 格替换，
  * 所以 1 格容器也能换成<b>别的</b>法术。也正因如此，<b>本类绝不能把等级强制写回</b>——
  * 一旦巡检发现「等级不对」就改写，玩家在铁砧上的改动会被每秒覆盖。故所有写入都遵循
- * 「已存在就绝不触碰」。
+ * 「已存在就绝不触碰」，只有一处例外见 {@link #ensureInnateSpell} 的迁移说明。
  */
 public final class IronsSpellsCompat {
 
@@ -60,8 +60,8 @@ public final class IronsSpellsCompat {
      * 自带法术<b>按线区分</b>：
      * <ul>
      *   <li>布景之杖线（布景之杖 / 残景之杖）→ <b>火焰箭</b> {@code irons_spellbooks:firebolt}；</li>
-     *   <li>启明星线（永远的启明星 / 启明星）→ <b>烈焰冲锋</b> {@code irons_spellbooks:burning_dash}
-     *       （中文名取自铁魔法自带语言文件 {@code spell.irons_spellbooks.burning_dash}）。</li>
+     *   <li>启明星线（永远的启明星 / 启明星）→ <b>烈焰冲锋</b> {@code irons_spellbooks:burning_dash}；</li>
+     *   <li>不屈命定之冠 → <b>闪电球</b> {@code irons_spellbooks:ball_lightning}。</li>
      * </ul>
      * 等级上限不写死：{@link AbstractSpell#getMaxLevel()} 由铁魔法的服务端配置决定，
      * 不同版本可能不同，写入前一律按法术自身的上下限 clamp，避免容器里出现越界等级。
@@ -70,14 +70,20 @@ public final class IronsSpellsCompat {
             ResourceLocation.fromNamespaceAndPath("irons_spellbooks", "firebolt");
     private static final ResourceLocation BURNING_DASH_ID =
             ResourceLocation.fromNamespaceAndPath("irons_spellbooks", "burning_dash");
+    private static final ResourceLocation BALL_LIGHTNING_ID =
+            ResourceLocation.fromNamespaceAndPath("irons_spellbooks", "ball_lightning");
 
     /** 这把刀属于哪条线、该自带哪个法术 */
     private static ResourceLocation spellIdFor(ItemStack stack) {
+        if (SceneryBlades.isCartethyia(stack)) {
+            return BALL_LIGHTNING_ID;
+        }
         return SceneryBlades.isQimingxingBlade(stack) ? BURNING_DASH_ID : FIREBOLT_ID;
     }
 
     /** 四条属性的修饰符 ID（命名空间为本模组，避免与铁魔法自身冲突） */
     private static final ResourceLocation FIRE_POWER_MOD = SceneryStaff.prefix("iss_fire_spell_power");
+    private static final ResourceLocation LIGHTNING_POWER_MOD = SceneryStaff.prefix("iss_lightning_spell_power");
     private static final ResourceLocation SPELL_POWER_MOD = SceneryStaff.prefix("iss_spell_power");
     private static final ResourceLocation MANA_REGEN_MOD = SceneryStaff.prefix("iss_mana_regen");
     private static final ResourceLocation MAX_MANA_MOD = SceneryStaff.prefix("iss_max_mana");
@@ -89,14 +95,14 @@ public final class IronsSpellsCompat {
      * {@code max_mana} 基础值是 100、用 {@code ADD_VALUE} 加绝对值。
      * <p>
      * 注意铁魔法是<b>相乘</b>结算的（{@code getEntityPowerMultiplier = 配置倍率 × 通用法术强度 × 学派法术强度}），
-     * 所以最终刀对火系法术的实际加成是 {@code 1.10 × 1.30 = 1.43}（+43%），不是 +40%。
+     * 所以最终刀对同系法术的实际加成是 {@code 1.10 × 1.30 = 1.43}（+43%），不是 +40%。
      */
-    private static final double FIRE_POWER = 0.15D;
+    private static final double SCHOOL_POWER = 0.15D;
     private static final double SPELL_POWER = 0.05D;
     private static final double MANA_REGEN = 0.25D;
     private static final double MAX_MANA = 150.0D;
 
-    // 自带烈焰冲锋的期望等级（写入前按法术自身上下限 clamp）
+    // 自带法术的期望等级（写入前按法术自身上下限 clamp）
     private static final int SPELL_LEVEL_WORN = 5;
     private static final int SPELL_LEVEL_FINAL = 10;
 
@@ -109,7 +115,7 @@ public final class IronsSpellsCompat {
     /** 只允许在铁魔法存在时调用：调用即触发本类加载，并挂上三个监听 */
     public static void register() {
         NeoForge.EVENT_BUS.register(IronsSpellsCompat.class);
-        SceneryStaff.LOGGER.info("[铁魔法联动] 已启用：法杖属性 + 自带法术（布景之杖线火焰箭 / 启明星线烈焰冲锋；下位档 {} 级 / 上位档 {} 级）",
+        SceneryStaff.LOGGER.info("[铁魔法联动] 已启用：法杖属性 + 自带法术（布景之杖线火焰箭 / 启明星线烈焰冲锋 / 不屈命定之冠闪电球；下位档 {} 级 / 上位档 {} 级）",
                 SPELL_LEVEL_WORN, SPELL_LEVEL_FINAL);
     }
 
@@ -121,11 +127,18 @@ public final class IronsSpellsCompat {
         if (!SceneryBlades.isWavebandUpgradable(stack)) {
             return;
         }
-        // 上位档（布景之杖 / 永远的启明星）翻倍，下位档（残景之杖 / 启明星）为基础值
+        // 上位档翻倍，下位档为基础值
         double mul = SceneryBlades.isTopTier(stack) ? 2.0D : 1.0D;
 
-        event.addModifier(AttributeRegistry.FIRE_SPELL_POWER,
-                new AttributeModifier(FIRE_POWER_MOD, FIRE_POWER * mul,
+        // 学派法强跟着刀走：不屈命定之冠的剑技是雷霆系，其余两条线是火焰系
+        boolean lightning = SceneryBlades.isCartethyia(stack);
+        Holder<Attribute> schoolPower = lightning
+                ? AttributeRegistry.LIGHTNING_SPELL_POWER
+                : AttributeRegistry.FIRE_SPELL_POWER;
+        ResourceLocation schoolModId = lightning ? LIGHTNING_POWER_MOD : FIRE_POWER_MOD;
+
+        event.addModifier(schoolPower,
+                new AttributeModifier(schoolModId, SCHOOL_POWER * mul,
                         AttributeModifier.Operation.ADD_MULTIPLIED_BASE),
                 EquipmentSlotGroup.MAINHAND);
         event.addModifier(AttributeRegistry.SPELL_POWER,
@@ -164,11 +177,19 @@ public final class IronsSpellsCompat {
     }
 
     /**
-     * 让刀「自带」其所属线的法术（布景之杖线火焰箭 / 启明星线烈焰冲锋），并顺带迁移早期写错的容器。
+     * 让刀「自带」其所属线的法术（布景之杖线火焰箭 / 启明星线烈焰冲锋 / 不屈命定之冠闪电球），
+     * 并顺带迁移两种早期写入的容器。
      * <p>
      * 判断「有无法术」用的是 {@code getSpellAtIndex(0) != SpellData.EMPTY}，<b>刻意不用 {@code isEmpty()}</b>：
      * 后者读的是 {@code activeSlots} 字段，而 {@code ISpellContainer.create(...)} 造出来的容器该字段恒为 0，
      * 用它就会永远判定为空、每秒重写一次，把玩家在奥术铁砧上改好的法术冲掉。
+     * <p>
+     * <b>两处迁移</b>（都只在「确实是我们自己写进去的」前提下动手）：
+     * <ol>
+     *   <li>{@code mustEquip=true} 的单格容器——早期写入时布尔传反了，会让刀拿在手上时反而不进轮盘；</li>
+     *   <li>不屈命定之冠上仍是<b>火焰箭</b>的容器——该刀的自带法术后来改成了闪电球，
+     *       这里按原等级替换一次，让旧存档里的刀也能跟上。玩家用铁砧换成别的法术则不受影响。</li>
+     * </ol>
      */
     private static void ensureInnateSpell(ItemStack stack) {
         if (stack.isEmpty() || !SceneryBlades.isWavebandUpgradable(stack)) {
@@ -179,15 +200,25 @@ public final class IronsSpellsCompat {
             ISpellContainer existing = ISpellContainer.get(stack);
             SpellData current = existing == null ? SpellData.EMPTY : existing.getSpellAtIndex(0);
             if (current != SpellData.EMPTY) {
-                // 已有法术 → 通常原样保留（含玩家在铁砧上改过的），绝不覆盖。
-                // 唯一例外：迁移早期写坏的容器——那时 mustEquip 传成了 true，会让刀拿在手上时反而不进轮盘。
-                // 这种组合只可能出自我们那次错误写入：铁魔法自己的默认（getOrCreate）与铁砧改写都保持 false，
-                // 且我们只碰单格容器（getMaxSpellCount()==1），不会误伤别的物品。
+                // 迁移 1：早期写坏的容器（mustEquip 传反）
                 if (existing != null && existing.mustEquip() && existing.getMaxSpellCount() == 1) {
                     writeContainer(stack, current.getSpell(), current.getLevel(), current.isLocked());
                     SceneryStaff.LOGGER.info("[铁魔法联动] 已修正刀上法术容器的 mustEquip 标记（保留原有 {} 级法术）",
                             current.getLevel());
+                    return;
                 }
+                // 迁移 2：不屈命定之冠的自带法术由火焰箭改为闪电球
+                if (SceneryBlades.isCartethyia(stack) && isSpell(current.getSpell(), FIREBOLT_ID)) {
+                    AbstractSpell ballLightning = SpellRegistry.getSpell(BALL_LIGHTNING_ID);
+                    if (ballLightning != null) {
+                        int level = Mth.clamp(current.getLevel(),
+                                ballLightning.getMinLevel(), ballLightning.getMaxLevel());
+                        writeContainer(stack, ballLightning, level, current.isLocked());
+                        SceneryStaff.LOGGER.info("[铁魔法联动] 不屈命定之冠的自带法术已迁移为闪电球（{} 级）", level);
+                    }
+                    return;
+                }
+                // 已有法术 → 通常原样保留（含玩家在铁砧上改过的），绝不覆盖
                 return;
             }
         }
@@ -199,6 +230,15 @@ public final class IronsSpellsCompat {
         int wanted = SceneryBlades.isTopTier(stack) ? SPELL_LEVEL_FINAL : SPELL_LEVEL_WORN;
         int level = Mth.clamp(wanted, spell.getMinLevel(), spell.getMaxLevel());
         writeContainer(stack, spell, level, true);
+    }
+
+    /** 判断容器里的法术是不是指定 id 的那个（按注册单例比对，避免依赖 getSpellResource 的版本差异） */
+    private static boolean isSpell(AbstractSpell spell, ResourceLocation expected) {
+        if (spell == null) {
+            return false;
+        }
+        AbstractSpell target = SpellRegistry.getSpell(expected);
+        return target != null && target == spell;
     }
 
     /**

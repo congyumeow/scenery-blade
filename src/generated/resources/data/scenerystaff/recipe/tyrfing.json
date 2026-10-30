@@ -1,0 +1,38 @@
+{
+  "type": "slashblade:shaped_blade",
+  "blade": "scenerystaff:tyrfing",
+  "category": "equipment",
+  "key": {
+    "A": {
+      "item": "minecraft:amethyst_shard"
+    },
+    "B": {
+      "item": "minecraft:iron_ingot"
+    },
+    "C": {
+      "item": "minecraft:diamond"
+    },
+    "D": {
+      "item": "minecraft:iron_block"
+    },
+    "X": {
+      "type": "slashblade:blade",
+      "items": [
+        "slashblade:slashblade"
+      ],
+      "request": {
+        "kill": 100,
+        "name": "scenerystaff:chaoxi"
+      }
+    }
+  },
+  "pattern": [
+    " A ",
+    "BXC",
+    " D "
+  ],
+  "result": {
+    "count": 1,
+    "id": "slashblade:slashblade"
+  }
+}

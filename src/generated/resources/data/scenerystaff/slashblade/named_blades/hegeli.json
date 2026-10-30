@@ -1,0 +1,32 @@
+{
+  "creativeGroup": "scenerystaff:scenerystaff_tab",
+  "enchantments": [
+    {
+      "id": "minecraft:power",
+      "lvl": 5
+    },
+    {
+      "id": "minecraft:unbreaking",
+      "lvl": 3
+    },
+    {
+      "id": "minecraft:sharpness",
+      "lvl": 3
+    }
+  ],
+  "name": "scenerystaff:hegeli",
+  "properties": {
+    "attack_base": 12.0,
+    "max_damage": 300,
+    "slash_art": "slashblade:wave_edge",
+    "sword_type": [
+      "bewitched"
+    ]
+  },
+  "render": {
+    "carry_type": "default",
+    "model": "scenerystaff:model/chaoxi/chaoxi.obj",
+    "summon_sword_color": 9313051,
+    "texture": "scenerystaff:model/hegeli/hegeli.png"
+  }
+}

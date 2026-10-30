@@ -2,6 +2,7 @@ package com.xingling.scenerystaff.registry;
 
 import com.xingling.scenerystaff.SceneryStaff;
 import com.xingling.scenerystaff.blade.SceneryIds;
+import com.xingling.scenerystaff.sa.DefierThornSA;
 import com.xingling.scenerystaff.sa.ErosionDomainSA;
 import com.xingling.scenerystaff.sa.GiantSwordSA;
 import mods.flammpfeil.slashblade.registry.combo.ComboState;
@@ -31,4 +32,8 @@ public class ComboStateRegistry {
     /** 剑技「永远的启明星」：第 0 帧播 Aemeath 语音并召唤巨剑 */
     public static final DeferredHolder<ComboState, ComboState> GIANT_SWORD =
             COMBO_STATE.register(SceneryIds.GIANT_SWORD_PATH, GiantSwordSA::createComboState);
+
+    /** 剑技「自由骑士之舞」：第 0 帧结算视角正前方长方体范围内的伤害 */
+    public static final DeferredHolder<ComboState, ComboState> DEFIER_THORN =
+            COMBO_STATE.register(SceneryIds.DEFIER_THORN_PATH, DefierThornSA::createComboState);
 }

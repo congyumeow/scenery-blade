@@ -30,7 +30,7 @@ import java.util.stream.Collectors;
 public final class SceneryBlades {
 
     /** 两条刀线：布景之杖线、启明星线 */
-    public enum Line { SCENERY, QIMINGXING }
+    public enum Line { SCENERY, QIMINGXING, CARTETHYIA }
 
     /** 档位：上位（终盘刀）与下位 */
     public enum Tier { FINAL, WORN }
@@ -52,7 +52,9 @@ public final class SceneryBlades {
             new Spec(SceneryIds.SCENERY_STAFF, Line.SCENERY, Tier.FINAL, true, true),
             new Spec(SceneryIds.SCENERY_STAFF_WORN, Line.SCENERY, Tier.WORN, false, true),
             new Spec(SceneryIds.QIMINGXING, Line.QIMINGXING, Tier.FINAL, true, true),
-            new Spec(SceneryIds.QIMINGXING_WORN, Line.QIMINGXING, Tier.WORN, false, true));
+            new Spec(SceneryIds.QIMINGXING_WORN, Line.QIMINGXING, Tier.WORN, false, true),
+            // 不屈命定之冠：同为毕业刀，可由「卡提希娅的回音频段」强化
+            new Spec(SceneryIds.CARTETHYIA, Line.CARTETHYIA, Tier.FINAL, true, true));
 
     private static final Map<ResourceLocation, Spec> BY_ID = SPECS.stream()
             .collect(Collectors.toUnmodifiableMap(Spec::id, spec -> spec));
@@ -118,6 +120,16 @@ public final class SceneryBlades {
     /** 是否为启明星线的下位刀「启明星」 */
     public static boolean isQimingxingWorn(ItemStack stack) {
         return is(stack, SceneryIds.QIMINGXING_WORN);
+    }
+
+    /**
+     * 是否为「不屈命定之冠」。
+     * <p>
+     * 它单独成线、不属于布景之杖线也不属于启明星线：不参与侵蚀领域/聚爆那套上限，
+     * 只负责自己的「风蚀」叠层（见 {@code WindErosionApplier}），并决定风蚀的层数上限。
+     */
+    public static boolean isCartethyia(ItemStack stack) {
+        return is(stack, SceneryIds.CARTETHYIA);
     }
 
     /** 是否为基础刀「潮汐」 */

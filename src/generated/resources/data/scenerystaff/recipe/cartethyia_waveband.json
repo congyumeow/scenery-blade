@@ -1,0 +1,27 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "A": {
+      "item": "minecraft:dandelion"
+    },
+    "B": {
+      "item": "scenerystaff:xuzhi"
+    },
+    "C": {
+      "item": "minecraft:poppy"
+    },
+    "D": {
+      "item": "minecraft:diamond"
+    }
+  },
+  "pattern": [
+    "ABA",
+    "BDB",
+    "CBC"
+  ],
+  "result": {
+    "count": 1,
+    "id": "scenerystaff:cartethyia_waveband"
+  }
+}

@@ -1,0 +1,38 @@
+{
+  "type": "slashblade:shaped_blade",
+  "blade": "scenerystaff:aoter",
+  "category": "equipment",
+  "key": {
+    "A": {
+      "item": "minecraft:lapis_lazuli"
+    },
+    "B": {
+      "item": "minecraft:gold_ingot"
+    },
+    "C": {
+      "item": "minecraft:diamond"
+    },
+    "D": {
+      "item": "minecraft:iron_ingot"
+    },
+    "X": {
+      "type": "slashblade:blade",
+      "items": [
+        "slashblade:slashblade"
+      ],
+      "request": {
+        "kill": 100,
+        "name": "scenerystaff:chaoxi"
+      }
+    }
+  },
+  "pattern": [
+    " A ",
+    "BXC",
+    " D "
+  ],
+  "result": {
+    "count": 1,
+    "id": "slashblade:slashblade"
+  }
+}

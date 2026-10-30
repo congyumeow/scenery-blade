@@ -54,13 +54,24 @@ public class ItemRegistry {
     /**
      * 爱弥斯的回音频段：与「达妮娅的回音频段」对应的强化材料，用于强化启明星。
      * <p>
-     * 两条强化线各管一把刀：达妮娅的回音频段 → 布景之杖系列；爱弥斯的回音频段 → 启明星。
+     * 三条强化线各管一把刀：达妮娅 → 布景之杖系列；爱弥斯 → 启明星；卡提希娅 → 不屈命定之冠。
      * 强化方式与数值完全一致（铁砧、上限 6 级、攻击力加成、暴击率/暴击伤害线性提升）。
      * 描述键前缀 {@code item.scenerystaff.aemeath_waveband.desc.}，堆叠上限 16。
      */
     public static final DeferredHolder<Item, Item> AEMEATH_WAVEBAND =
             REGISTRY.register("aemeath_waveband", () -> new DescribedItem(
                     new Item.Properties().stacksTo(16), "item.scenerystaff.aemeath_waveband.desc."));
+
+    /**
+     * 卡提希娅的回音频段：不屈命定之冠的强化材料。
+     * <p>
+     * 与另外两条回音频段同构：铁砧强化、上限 6 级、攻击力加成、暴击率/暴击伤害线性提升，
+     * 数值全部由 {@link com.xingling.scenerystaff.blade.WavebandUpgrade} 统一管理。
+     * 描述键前缀 {@code item.scenerystaff.cartethyia_waveband.desc.}，堆叠上限 16。
+     */
+    public static final DeferredHolder<Item, Item> CARTETHYIA_WAVEBAND =
+            REGISTRY.register("cartethyia_waveband", () -> new DescribedItem(
+                    new Item.Properties().stacksTo(16), "item.scenerystaff.cartethyia_waveband.desc."));
 
     /**
      * 新维度地基方块「虚质方块」的物品形态。

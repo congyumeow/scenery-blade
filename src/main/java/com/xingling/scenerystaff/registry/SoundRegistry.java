@@ -24,6 +24,11 @@ public class SoundRegistry {
      */
     public static final DeferredHolder<SoundEvent, SoundEvent> AEMEATH = createEvent("aemeath");
 
+    /** 不屈命定之冠「自由骑士之舞」的释放语音（三条轮播，释放时随机取一条） */
+    public static final DeferredHolder<SoundEvent, SoundEvent> CARTETHYIA1 = createEvent("cartethyia1");
+    public static final DeferredHolder<SoundEvent, SoundEvent> CARTETHYIA2 = createEvent("cartethyia2");
+    public static final DeferredHolder<SoundEvent, SoundEvent> CARTETHYIA3 = createEvent("cartethyia3");
+
     private static DeferredHolder<SoundEvent, SoundEvent> createEvent(String name) {
         return REGISTRY.register(name, () -> SoundEvent.createVariableRangeEvent(SceneryStaff.prefix(name)));
     }

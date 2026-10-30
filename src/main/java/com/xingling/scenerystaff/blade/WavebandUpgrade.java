@@ -49,7 +49,7 @@ public final class WavebandUpgrade {
     /**
      * 这条回音频段能不能强化这把刀。
      * <p>
-     * 达妮娅的 → 布景之杖系列；爱弥斯的 → 启明星。
+     * 达妮娅的 → 布景之杖系列；爱弥斯的 → 启明星；卡提希娅的 → 不屈命定之冠。
      */
     public static boolean matches(ItemStack waveband, ItemStack blade) {
         if (waveband.is(ItemRegistry.DENIA_WAVEBAND.get())) {
@@ -57,6 +57,9 @@ public final class WavebandUpgrade {
         }
         if (waveband.is(ItemRegistry.AEMEATH_WAVEBAND.get())) {
             return SceneryBlades.isQimingxingBlade(blade);
+        }
+        if (waveband.is(ItemRegistry.CARTETHYIA_WAVEBAND.get())) {
+            return SceneryBlades.isCartethyia(blade);
         }
         return false;
     }
